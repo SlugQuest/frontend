@@ -2,16 +2,16 @@
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
 
-## Creating a project
+## Getting started
 
-If you're seeing this, you've probably already done this step. Congrats!
+1. Install either npm or pnpm (pnpm is basically npm but faster and better).
+
+[pnpm website](https://pnpm.io/installation)
+
+2. Install the dependencies for the project
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+pnpm install
 ```
 
 ## Developing
