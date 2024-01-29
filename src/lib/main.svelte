@@ -9,7 +9,7 @@
 <main class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
 	<TopBar />
 	<section class="flex flex-1 overflow-hidden">
-		<SideBar title="Catagories">
+		<SideBar title="Categories">
 			<SideBarItem path="/" name="Work">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
