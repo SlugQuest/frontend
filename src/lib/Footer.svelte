@@ -1,5 +1,5 @@
 <footer class="flex items-center justify-between p-4 bg-white shadow-md">
-	<p class="text-sm text-gray-600 dark:text-gray-400">© 2024 Gamified To-Do List</p>
+	<p class="text-sm text-gray-600 dark:text-gray-400">© 2024 SlugQuest</p>
 	<div class="flex items-center gap-4">
 		<!-- <svg
 			xmlns="http://www.w3.org/2000/svg"
