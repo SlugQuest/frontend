@@ -1,7 +1,7 @@
-<footer class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 shadow-md">
+<footer class="flex items-center justify-between p-4 bg-white shadow-md">
 	<p class="text-sm text-gray-600 dark:text-gray-400">© 2024 Gamified To-Do List</p>
 	<div class="flex items-center gap-4">
-		<svg
+		<!-- <svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"
 			height="24"
@@ -23,6 +23,6 @@
 			<path d="m6.34 17.66-1.41 1.41"></path>
 			<path d="m19.07 4.93-1.41 1.41"></path>
 		</svg>
-		<p class="text-lg font-semibold">Light Mode</p>
+		<p class="text-lg font-semibold">Light Mode</p> -->
 	</div>
 </footer>

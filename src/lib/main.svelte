@@ -6,7 +6,7 @@
 	import TopBar from './TopBar.svelte';
 </script>
 
-<main class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
+<main class="flex flex-col h-screen bg-white">
 	<TopBar title="Could be whatever?"/>
 	<section class="flex flex-1 overflow-hidden">
 		<SideBar title="Categories">
