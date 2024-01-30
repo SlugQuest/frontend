@@ -7,7 +7,7 @@
 </script>
 
 <main class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900">
-	<TopBar />
+	<TopBar title="Could be whatever?"/>
 	<section class="flex flex-1 overflow-hidden">
 		<SideBar title="Categories">
 			<SideBarItem path="/" name="Work">
@@ -67,7 +67,7 @@
 				<h2 class="text-lg font-semibold mb-2">Today's Tasks</h2>
 				<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 					{#each Array(6) as _}
-						<TaskCard />
+						<TaskCard title="test" description="placeholder"/>
 					{/each}
 				</div>
 			</div>
@@ -75,7 +75,7 @@
 				<h2 class="text-lg font-semibold mb-2">Upcoming Tasks</h2>
 				<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 					{#each Array(6) as _}
-						<TaskCard />
+						<TaskCard title="Worry about this later" description="user defined"/>
 					{/each}
 				</div>
 			</div>

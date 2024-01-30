@@ -1,5 +1,9 @@
+<script lang="ts">
+	export let title: string;
+</script>
+
 <header class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 shadow-md">
-	<h1 class="text-2xl font-bold">Gamified To-Do List</h1>
+	<h1 class="text-2xl font-bold">{title}</h1>
 	<div class="flex items-center gap-4">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
