@@ -1,13 +1,37 @@
 <script lang="ts">
+    const BACKEND_URL = 'http://localhost:8080';
+
     export let title: string;
     // export let points: number;
     let showModal = false;
     let taskName = '';
     let taskDescription = '';
 
-    function addTask() {
-        // Add your task creation logic here
-        console.log(taskName, taskDescription);
+    async function addTask() {
+        const task = {
+            UserID: "user",
+            Category: "Work",
+            TaskName: taskName,
+            Description: taskDescription,
+            StartTime: null,
+            EndTime: null,
+            IsCompleted: false,
+            IsRecurring: false,
+            IsAllDay: false
+        };
+
+        const response = await fetch('${BACKEND_URL}/main/blah/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ task })
+        });
+
+        if (!response.ok) {
+            console.error('Failed to add task', response);
+        }
+
         taskName = '';
         taskDescription = '';
         showModal = false;
