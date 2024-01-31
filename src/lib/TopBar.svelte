@@ -9,25 +9,21 @@
 
     async function addTask() {
         const task = {
-            UserID: "user",
+            UserID: "user123",
             Category: "Work",
             TaskName: taskName,
             Description: taskDescription,
-            StartTime: null,
-            EndTime: null,
+            StartTime: "2024-01-01T17:00:00Z",
+            EndTime: "2024-01-01T17:00:00Z",
             IsCompleted: false,
             IsRecurring: false,
             IsAllDay: false
         };
 
-        const response = await fetch('${BACKEND_URL}/main/blah/tasks', {
+        const response = await fetch(`${BACKEND_URL}/main/blah/tasks`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify({ task })
         });
-
         if (!response.ok) {
             console.error('Failed to add task', response);
         }
