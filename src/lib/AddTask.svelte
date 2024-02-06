@@ -26,17 +26,17 @@
             IsAllDay: taskIsAllDay
         };
 
-        // const response = await fetch(`${BACKEND_URL}/main/blah/tasks`, {
-        //     method: 'POST',
-        //     body: JSON.stringify({ task })
-        // });
-        // if (!response.ok) {
-        //     console.error('Failed to add task', response);
-        // }
-
-        console.log({
-            task
+        const response = await fetch(`${BACKEND_URL}/main/blah/tasks`, {
+            method: 'POST',
+            body: JSON.stringify({ task })
         });
+        if (!response.ok) {
+            console.error('Failed to add task', response);
+        }
+
+        // console.log({
+        //     task
+        // });
 
         taskName = '';
         taskDescription = '';
