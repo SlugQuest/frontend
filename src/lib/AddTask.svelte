@@ -18,7 +18,7 @@
             IsAllDay: false
         };
 
-        const response = await fetch(`${BACKEND_URL}/main/blah/tasks`, {
+        const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
             method: 'POST',
             body: JSON.stringify({ task })
         });

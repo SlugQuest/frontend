@@ -6,7 +6,7 @@
     const BACKEND_URL = 'http://localhost:8080';
 
     async function deleteTask() {
-        const response = await fetch(`${BACKEND_URL}/main/blah/tasks/${task_id}`, {
+        const response = await fetch(`${BACKEND_URL}/api/v1/task/:${task_id}`, {
             method: 'DELETE',
         });
 
