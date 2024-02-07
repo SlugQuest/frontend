@@ -4,24 +4,31 @@
     let isLoggedIn = false;
     
     function login() {
-    // Make a GET request to the /login endpoint
-    fetch(`${BACKEND_URL}/login`, { })
-        .then(response => {
-            if (response.type === 'opaqueredirect') {
-                window.location.href = response.url;
-            }
-        })
-        .catch(error => console.error('Error:', error));
-}
+        // Redirect to the /login endpoint which then redirects to Auth0
+        window.location.href = `${BACKEND_URL}/login`;
+        isLoggedIn = true;
+
+        // Make a GET request to the /login endpoint
+        // fetch(`${BACKEND_URL}/login`, { })
+        //     .then(response => {
+        //         if (response.type === 'opaqueredirect') {
+        //             window.location.href = response.url;
+        //         }
+        //     })
+        //     .catch(error => console.error('Error:', error));
+    }
     
     function logout() {
+        window.location.href = `${BACKEND_URL}/logout`;
+        isLoggedIn = false;
+
         // Make an API call to log out the user
         // Update isLoggedIn based on the response
-        fetch('/api/logout', { })
-            .then(() => {
-                isLoggedIn = false;
-            })
-            .catch(error => console.error('Error:', error));
+        // fetch(`${BACKEND_URL}/logout`, { })
+        //     .then(() => {
+        //         isLoggedIn = false;
+        //     })
+        //     .catch(error => console.error('Error:', error));
     }
     </script>
     
