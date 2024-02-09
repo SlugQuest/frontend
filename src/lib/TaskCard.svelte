@@ -6,8 +6,9 @@
     export let task_id: number;
 
     async function deleteTask() {
-        const response = await fetch(`${BACKEND_URL}/api/v1/task/:${task_id}`, {
+        const response = await fetch(`${BACKEND_URL}/api/v1/task/${task_id}`, {
             method: 'DELETE',
+            credentials: 'include',
         });
 
         if (!response.ok) {
