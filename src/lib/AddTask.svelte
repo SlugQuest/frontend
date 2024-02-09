@@ -10,20 +10,23 @@
     let taskIsRecurring = false;
     let taskIsAllDay = false;
     let taskDifficulty = '';
+    let cronExpression = '';
     const setDifficulty = (difficulty) => taskDifficulty = difficulty;
 
 
     async function addTask() {
         const task = {
-            UserID: "user123",
+            UserID: "testUserId",
             Category: taskCategory,
             TaskName: taskName,
             Description: taskDescription,
             StartTime: taskStartTime,
             EndTime: taskEndTime,
-            IsCompleted: false,
+            Status: "todo",
             IsRecurring: taskIsRecurring,
-            IsAllDay: taskIsAllDay
+            IsAllDay: taskIsAllDay,
+            Difficulty: taskDifficulty,
+            CronExpression: cronExpression
         };
 
         const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
@@ -47,6 +50,7 @@
         taskIsRecurring = false;
         taskIsAllDay = false;
         taskDifficulty = '';
+        cronExpression = '';
         
         showModal = false;
     }
