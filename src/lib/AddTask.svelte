@@ -1,5 +1,6 @@
 <script lang="ts">
     import { BACKEND_URL } from './BackendURL';
+    import prepareTasks from './TaskCardView.svelte';
 
     let showModal = false;
     let taskName = '';
@@ -30,6 +31,8 @@
         taskName = '';
         taskDescription = '';
         showModal = false;
+
+        prepareTasks();
     }
 </script>
 

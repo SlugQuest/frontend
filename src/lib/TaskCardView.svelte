@@ -1,17 +1,22 @@
 <!-- TaskCardView.svelte -->
 <script>
-    const BACKEND_URL = 'http://localhost:8080';
+    import { BACKEND_URL } from './BackendURL';
 
     import { onMount } from 'svelte';
     import TaskCard from './TaskCard.svelte';
     let tasks = [];
     let tasksByCategory = {};
 
-    onMount(async () => {
-        const response = await fetch(`${BACKEND_URL}/api/v1/tasks`);
-        tasks = await response.json();
-        tasksByCategory = groupByCategory(tasks);
-    });
+    async function fetchTasks() {
+        const response = await fetch(`${BACKEND_URL}/api/v1/tasks`, {
+            credentials: 'include'
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const tasks = await response.json();
+    return tasks;
+    }
 
     function groupByCategory(tasks) {
         return tasks.reduce((groups, task) => {
@@ -23,6 +28,16 @@
             return groups;
         }, {});
     }
+
+    export async function prepareTasks() {
+        tasks = await fetchTasks();
+        tasksByCategory = groupByCategory(tasks);
+    }
+
+    onMount(async () => {
+        prepareTasks();
+    });
+    
 </script>
 
 <section class="flex-1 overflow-auto">
