@@ -20,6 +20,7 @@
 
         const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
             method: 'POST',
+            credentials: 'include',
             body: JSON.stringify({ task })
         });
         if (!response.ok) {
