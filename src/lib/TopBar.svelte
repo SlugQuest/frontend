@@ -1,7 +1,7 @@
 <script lang="ts">
     const BACKEND_URL = 'http://localhost:8080';
 
-    import LoginButton from './LoginButton.svelte';
+    import LogOutButton from './LogOutButton.svelte';
     import AddTask from './AddTask.svelte';
     
     export let title: string;
@@ -11,6 +11,6 @@
     <h1 class="text-2xl font-bold">{title}</h1>
     <div class="flex items-center gap-4">
         <AddTask />
-        <LoginButton />
+        <LogOutButton />
     </div>
 </header>
