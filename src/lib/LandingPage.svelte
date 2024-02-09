@@ -1,5 +1,5 @@
 <script>
-    const BACKEND_URL = 'http://your-backend-url.com';
+    const BACKEND_URL = 'http://localhost:8080';
 
     const redirectToLogin = () => {
         window.location.href = `${BACKEND_URL}/login`;
