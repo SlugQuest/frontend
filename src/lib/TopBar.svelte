@@ -1,6 +1,4 @@
 <script lang="ts">
-    const BACKEND_URL = 'http://localhost:8080';
-
     import LogOutButton from './LogOutButton.svelte';
     import AddTask from './AddTask.svelte';
     

@@ -1,5 +1,5 @@
 <script>
-    const BACKEND_URL = 'http://localhost:8080';
+    import { BACKEND_URL } from './BackendURL';
     
     function logout() {
         window.location.href = `${BACKEND_URL}/logout`;
