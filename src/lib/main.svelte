@@ -7,7 +7,7 @@
 </script>
 
 <main class="flex flex-col h-screen bg-white">
-	<TopBar title="Could be whatever?"/>
+	<TopBar title="SlugQuest"/>
 	<section class="flex flex-1 overflow-hidden">
 		<SideBar title="Categories">
 			<SideBarItem path="/" name="Work">
