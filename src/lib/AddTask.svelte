@@ -16,7 +16,6 @@
 
     async function addTask() {
         const task = {
-            UserID: "testUserId",
             Category: taskCategory,
             TaskName: taskName,
             Description: taskDescription,
