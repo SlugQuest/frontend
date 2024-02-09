@@ -1,34 +1,13 @@
 <script>
     const BACKEND_URL = 'http://localhost:8080';
-
-    let isLoggedIn = false;
     
     function login() {
         // Redirect to the /login endpoint which then redirects to Auth0
         window.location.href = `${BACKEND_URL}/login`;
-        isLoggedIn = true;
-
-        // Make a GET request to the /login endpoint
-        // fetch(`${BACKEND_URL}/login`, { })
-        //     .then(response => {
-        //         if (response.type === 'opaqueredirect') {
-        //             window.location.href = response.url;
-        //         }
-        //     })
-        //     .catch(error => console.error('Error:', error));
     }
     
     function logout() {
         window.location.href = `${BACKEND_URL}/logout`;
-        isLoggedIn = false;
-
-        // Make an API call to log out the user
-        // Update isLoggedIn based on the response
-        // fetch(`${BACKEND_URL}/logout`, { })
-        //     .then(() => {
-        //         isLoggedIn = false;
-        //     })
-        //     .catch(error => console.error('Error:', error));
     }
     </script>
     
@@ -40,8 +19,4 @@
     }
     </style>
     
-    {#if isLoggedIn}
-        <button class="button" on:click={logout}>Log Out</button>
-    {:else}
-        <button class="button" on:click={login}>Log In</button>
-    {/if}
+    <button class="button" on:click={logout}>Log Out</button>
