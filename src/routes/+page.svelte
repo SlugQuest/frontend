@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Main from "$lib/main.svelte";
+	import LandingPage from "$lib/LandingPage.svelte";
 
 </script>
 
-<Main />
+<LandingPage />

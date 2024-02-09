@@ -67,7 +67,7 @@
 				<h2 class="text-lg font-semibold mb-2">Today's Tasks</h2>
 				<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 					{#each Array(6) as _}
-						<TaskCard title="test" description="placeholder"/>
+						<TaskCard title="test" description="placeholder" task_id={-1}/>
 					{/each}
 				</div>
 			</div>
@@ -75,7 +75,7 @@
 				<h2 class="text-lg font-semibold mb-2">Upcoming Tasks</h2>
 				<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 					{#each Array(6) as _}
-						<TaskCard title="Worry about this later" description="user defined"/>
+<TaskCard title="Worry about this later" description="user defined" task_id={-1}/>
 					{/each}
 				</div>
 			</div>

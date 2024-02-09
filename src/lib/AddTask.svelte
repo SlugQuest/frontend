@@ -1,5 +1,5 @@
 <script lang="ts">
-    const BACKEND_URL = 'http://localhost:8080';
+    import { BACKEND_URL } from './BackendURL';
 
     let showModal = false;
     let taskName = '';
@@ -26,8 +26,9 @@
             IsAllDay: taskIsAllDay
         };
 
-        const response = await fetch(`${BACKEND_URL}/main/blah/tasks`, {
+        const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
             method: 'POST',
+            credentials: 'include',
             body: JSON.stringify({ task })
         });
         if (!response.ok) {
