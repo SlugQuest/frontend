@@ -63,5 +63,6 @@
 			</SideBarItem>
 		</SideBar>
 		<TaskCardView />
+	</section>
 	<Footer />
 </main>
