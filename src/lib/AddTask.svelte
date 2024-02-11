@@ -1,6 +1,6 @@
 <script lang="ts">
     import { BACKEND_URL } from './BackendURL';
-    import prepareTasks from './TaskCardView.svelte';
+    import { taskStore } from './taskStore';
 
     let showModal = false;
     let taskName = '';
@@ -29,6 +29,10 @@
             CronExpression: cronExpression
         };
 
+        console.log({
+            task
+        })
+
         const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
             method: 'POST',
             credentials: 'include',
@@ -54,7 +58,7 @@
         
         showModal = false;
 
-        prepareTasks();
+        taskStore.prepareTasks();
     }
 </script>
 

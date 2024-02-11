@@ -1,5 +1,6 @@
 <script lang="ts">
     import { BACKEND_URL } from './BackendURL';
+    import { taskStore } from './taskStore';
     export let task: {
         TaskID: number;
         UserID: string;
@@ -24,6 +25,8 @@
         if (!response.ok) {
             console.error('Failed to delete task', response);
         }
+        taskStore.prepareTasks();
+
     }
 </script>
 
