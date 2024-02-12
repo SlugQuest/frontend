@@ -1,5 +1,6 @@
 <script lang="ts">
     import { BACKEND_URL } from './BackendURL';
+    import { taskStore } from './taskStore';
 
     let showModal = false;
     let taskName = '';
@@ -28,6 +29,10 @@
             CronExpression: cronExpression
         };
 
+        console.log({
+            task
+        })
+
         const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
             method: 'POST',
             credentials: 'include',
@@ -52,6 +57,9 @@
         cronExpression = '';
         
         showModal = false;
+
+        // taskStore.prepareTasks();
+        taskStore.addTask(task);
     }
 </script>
 
