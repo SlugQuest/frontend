@@ -41,11 +41,19 @@
     }
 
     async function completeTask() {
-
+        const response = await fetch(`${BACKEND_URL}/api/v1/passtask/${task.TaskID}`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+        taskStore.prepareTasks();
     }
 
     async function failTask() {
-
+        const response = await fetch(`${BACKEND_URL}/api/v1/failtask/${task.TaskID}`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+        taskStore.prepareTasks();
     }
 
     function formatFieldName(fieldName) {
