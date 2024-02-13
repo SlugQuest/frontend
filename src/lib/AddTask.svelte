@@ -94,9 +94,9 @@
                             </label>
                             <div class="mt-2">
                                 <div class="mt-2 flex">
-                                    <button on:click={() => setDifficulty('Easy')} class="px-4 py-2 border rounded-l-md {taskDifficulty === 'Easy' ? 'bg-gray-300' : ''}">Easy</button>
-                                    <button on:click={() => setDifficulty('Medium')} class="px-4 py-2 border-t border-b {taskDifficulty === 'Medium' ? 'bg-gray-300' : ''}">Medium</button>
-                                    <button on:click={() => setDifficulty('Hard')} class="px-4 py-2 border rounded-r-md {taskDifficulty === 'Hard' ? 'bg-gray-300' : ''}">Hard</button>
+                                    <button on:click={() => setDifficulty('easy')} class="px-4 py-2 border rounded-l-md {taskDifficulty === 'easy' ? 'bg-gray-300' : ''}">Easy</button>
+                                    <button on:click={() => setDifficulty('medium')} class="px-4 py-2 border-t border-b {taskDifficulty === 'medium' ? 'bg-gray-300' : ''}">Medium</button>
+                                    <button on:click={() => setDifficulty('hard')} class="px-4 py-2 border rounded-r-md {taskDifficulty === 'hard' ? 'bg-gray-300' : ''}">Hard</button>
                                 </div>
                             </div>                            
                         </div>
