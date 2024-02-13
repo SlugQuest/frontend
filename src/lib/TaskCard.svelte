@@ -132,9 +132,9 @@
                         {#if field === 'Difficulty'}
                             <label>{formatFieldName(field)}</label>
                             <div class="mt-2 flex">
-                                <button on:click={() => editTask[field] = 'Easy'} class="px-4 py-2 border rounded-l-md {editTask[field] === 'Easy' ? 'bg-gray-300' : ''}">Easy</button>
-                                <button on:click={() => editTask[field] = 'Medium'} class="px-4 py-2 border-t border-b {editTask[field] === 'Medium' ? 'bg-gray-300' : ''}">Medium</button>
-                                <button on:click={() => editTask[field] = 'Hard'} class="px-4 py-2 border rounded-r-md {editTask[field] === 'Hard' ? 'bg-gray-300' : ''}">Hard</button>
+                                <button on:click={() => editTask[field] = 'easy'} class="px-4 py-2 border rounded-l-md {editTask[field] === 'easy' ? 'bg-gray-300' : ''}">Easy</button>
+                                <button on:click={() => editTask[field] = 'medium'} class="px-4 py-2 border-t border-b {editTask[field] === 'medium' ? 'bg-gray-300' : ''}">Medium</button>
+                                <button on:click={() => editTask[field] = 'hard'} class="px-4 py-2 border rounded-r-md {editTask[field] === 'hard' ? 'bg-gray-300' : ''}">Hard</button>
                             </div>
                         {:else if field === 'StartTime' || field === 'EndTime'}
                             <label>{formatFieldName(field)}</label>
@@ -174,6 +174,7 @@
         box-sizing: border-box;
     }
     .modal-background {
+        z-index:1000;
         position: fixed;
         top: 0;
         left: 0;
