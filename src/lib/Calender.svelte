@@ -5,6 +5,7 @@
 	import { taskStore } from './taskStore';
 	import type { Task } from '$lib/taskStore';
 	import { onMount } from 'svelte';
+	import EditTaskModel from './EditTaskModel.svelte';
 
 	onMount(async () => {
 		taskStore.prepareTasks();
@@ -44,12 +45,12 @@
 	}
 
 	function convert_event(event: GetEvent): Task {
+		let prev_task = taskStore.getTask(event.resourceIds[0]);
 		return {
 			TaskID: event.resourceIds[0],
-			TaskName: event.title ?? '',
 			StartTime: event.start,
 			EndTime: event.end,
-			IsAllDay: event.allDay ?? false
+			...prev_task
 		};
 	}
 
@@ -115,21 +116,6 @@
 	<Calendar {plugins} {options} />
 </div>
 
-{#each task_models as task_model, index}
-	{#if task_model.open}
-    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-        <div class="bg-white p-5 rounded-lg">
-            <div class="flex justify-between">
-                <h1 class="text-2xl font-bold">Task</h1>
-                <button on:click={() => task_models[index].open = false}>&times;</button>
-            </div>
-            <div class="flex flex-col">
-                <input type="text" class="border-2 border-gray-200 p-2 rounded-lg" bind:value={tasks[index].TaskName} />
-                <input type="datetime-local" class="border-2 border-gray-200 p-2 rounded-lg" bind:value={tasks[index].StartTime} />
-                <input type="datetime-local" class="border-2 border-gray-200 p-2 rounded-lg" bind:value={tasks[index].EndTime} />
-                <button class="bg-blue-500 text-white p-2 rounded-lg" on:click={() => taskStore.updateTask(tasks[index])}>Update</button>
-            </div>
-        </div>
-    </div>
-	{/if}
+{#each task_models as task_model}
+	<EditTaskModel taskID={task_model.id} bind:show={task_model.open} />
 {/each}
