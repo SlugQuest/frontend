@@ -2,70 +2,98 @@
 	import Calendar from '@event-calendar/core';
 	import TimeGrid from '@event-calendar/time-grid';
 	import Interaction from '@event-calendar/interaction';
+	import { taskStore } from './taskStore';
+	import type { Task } from '$lib/taskStore';
+	import { onMount } from 'svelte';
 
-  import {getTasks} from '$lib/get_tasks';
+	onMount(async () => {
+		taskStore.prepareTasks();
+	});
 
-  import type {Task} from '$lib/get_tasks';
+	let tasks: Task[] = [];
 
-  let tasks = getTasks();
+  taskStore.subscribe((value) => {
+    tasks = value;
+  });
 
-	function _pad(num: number) {
-		let norm = Math.floor(Math.abs(num));
-		return (norm < 10 ? '0' : '') + norm;
+	type Event = {
+		start: string;
+		end: string;
+		resourceId: number;
+		display: string;
+		startEditable: boolean;
+		durationEditable: boolean;
+		editable: boolean;
+		title?: string;
+		color?: string;
+		allDay?: boolean;
+	};
+
+	function convert_task(task: Task): Event {
+		return {
+			start: task.StartTime,
+			end: task.EndTime,
+			resourceId: task.TaskID,
+			display: 'default',
+			startEditable: true,
+			durationEditable: true,
+			editable: true,
+			title: task.TaskName,
+			allDay: task.IsAllDay
+		};
 	}
 
-  type Event = {
-    start: string;
-    end: string;
-    resourceId: number;
-    display: string;
-    startEditable: boolean;
-    durationEditable: boolean;
-    editable: boolean;
-    title?: string;
-    color?: string;
-    allDay?: boolean;
-  }
-
-  function convert_task(task: Task): Event {
+  function convert_event(event: GetEvent): Task {
     return {
-      start: task.StartTime,
-      end: task.EndTime,
-      resourceId: task.TaskID,
-      display: 'default',
-      startEditable: false,
-      durationEditable: false,
-      editable: false,
-      title: task.TaskName,
-      allDay: task.IsAllDay
-    }
+      TaskID: event.resourceIds[0],
+      TaskName: event.title,
+      StartTime: event.start,
+      EndTime: event.end,
+      IsAllDay: event.allDay
+    };
   }
 
-	function gen_tasks() {
-    let events = tasks.map(convert_task);
+  function gen_tasks(tasks: Task[] = []) {
+		let events = tasks.map(convert_task);
 
-		let days = [];
-		for (let i = 0; i < 7; ++i) {
-			let day = new Date();
-			let diff = i - day.getDay();
-			day.setDate(day.getDate() + diff);
-			days[i] = day.getFullYear() + '-' + _pad(day.getMonth() + 1) + '-' + _pad(day.getDate());
-		}
-
-    console.log(days[0]);
-    console.log(events[0].start);
-
-    return events;
+		return events;
 	}
 
-	function update_callback(info: any) {
-		console.log(info);
+  type GetEvent = {
+		start: string;
+		end: string;
+		resourceIds: number;
+		display: string;
+		startEditable: boolean;
+		durationEditable: boolean;
+		editable: boolean;
+		title?: string;
+		color?: string;
+		allDay?: boolean;
+  }
+
+  type Info = {
+    event: GetEvent;
+    delta: {
+      days: number;
+      milliseconds: number;
+      minutes: number;
+      months: number;
+      seconds: number;
+      years: number;
+    };
+    revert: () => void;
+  };
+
+	function update_callback(info: Info) {
+    let task = convert_event(info.event);
+    taskStore.updateTask(task);
 	}
 
 	let plugins = [TimeGrid, Interaction];
-	let options = {
+	$: options = {
 		view: 'timeGridWeek',
-		events: gen_tasks(),
+		events: gen_tasks(tasks),
 		eventDrop: update_callback
 	};
 </script>
