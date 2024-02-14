@@ -1,34 +1,65 @@
 <script lang="ts">
-    const BACKEND_URL = 'http://localhost:8080';
+    import { BACKEND_URL } from './BackendURL';
+    import { taskStore } from './taskStore';
 
     let showModal = false;
     let taskName = '';
     let taskDescription = '';
+    let taskCategory = '';
+    let taskStartTime = '';
+    let taskEndTime = '';
+    let taskIsRecurring = false;
+    let taskIsAllDay = false;
+    let taskDifficulty = '';
+    let cronExpression = '';
+    const setDifficulty = (difficulty) => taskDifficulty = difficulty;
+
 
     async function addTask() {
         const task = {
-            UserID: "user123",
-            Category: "Work",
+            Category: taskCategory,
             TaskName: taskName,
             Description: taskDescription,
-            StartTime: "2024-01-01T17:00:00Z",
-            EndTime: "2024-01-01T17:00:00Z",
-            IsCompleted: false,
-            IsRecurring: false,
-            IsAllDay: false
+            StartTime: taskStartTime + ":00Z",
+            EndTime: taskEndTime + ":00Z",
+            Status: "todo",
+            IsRecurring: taskIsRecurring,
+            IsAllDay: taskIsAllDay,
+            Difficulty: taskDifficulty,
+            CronExpression: cronExpression
         };
 
-        const response = await fetch(`${BACKEND_URL}/main/blah/tasks`, {
+        console.log({
+            task
+        })
+
+        const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
             method: 'POST',
-            body: JSON.stringify({ task })
+            credentials: 'include',
+            body: JSON.stringify(task)
         });
         if (!response.ok) {
             console.error('Failed to add task', response);
         }
 
+        // console.log({
+        //     task
+        // });
+
         taskName = '';
         taskDescription = '';
+        taskCategory = '';
+        taskStartTime = '';
+        taskEndTime = '';
+        taskIsRecurring = false;
+        taskIsAllDay = false;
+        taskDifficulty = '';
+        cronExpression = '';
+        
         showModal = false;
+
+        // taskStore.prepareTasks();
+        taskStore.addTask(task);
     }
 </script>
 
@@ -50,6 +81,24 @@
                         <div class="mt-2">
                             <input bind:value={taskName} class="w-full px-2 py-1 border rounded-md" type="text" placeholder="Task name" />
                             <textarea bind:value={taskDescription} class="w-full px-2 py-1 border rounded-md mt-2" placeholder="Task description"></textarea>
+                            <input bind:value={taskCategory} class="w-full px-2 py-1 border rounded-md mt-2" type="text" placeholder="Task category" />
+                            <input bind:value={taskStartTime} class="w-full px-2 py-1 border rounded-md mt-2" type="datetime-local" placeholder="Start time" />
+                            <input bind:value={taskEndTime} class="w-full px-2 py-1 border rounded-md mt-2" type="datetime-local" placeholder="End time" />
+                            <label>
+                                <input bind:checked={taskIsRecurring} type="checkbox" />
+                                Is recurring
+                            </label>
+                            <label>
+                                <input bind:checked={taskIsAllDay} type="checkbox" />
+                                Is all day
+                            </label>
+                            <div class="mt-2">
+                                <div class="mt-2 flex">
+                                    <button on:click={() => setDifficulty('easy')} class="px-4 py-2 border rounded-l-md {taskDifficulty === 'easy' ? 'bg-gray-300' : ''}">Easy</button>
+                                    <button on:click={() => setDifficulty('medium')} class="px-4 py-2 border-t border-b {taskDifficulty === 'medium' ? 'bg-gray-300' : ''}">Medium</button>
+                                    <button on:click={() => setDifficulty('hard')} class="px-4 py-2 border rounded-r-md {taskDifficulty === 'hard' ? 'bg-gray-300' : ''}">Hard</button>
+                                </div>
+                            </div>                            
                         </div>
                     </div>
                 </div>
