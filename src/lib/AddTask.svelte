@@ -58,8 +58,8 @@
         
         showModal = false;
 
-        // taskStore.prepareTasks();
-        taskStore.addTask(task);
+        taskStore.prepareTasks();
+        // taskStore.addTask(task);
     }
 </script>
 
