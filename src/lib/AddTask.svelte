@@ -56,7 +56,7 @@
     }
 
     async function addTask() {
-        if (taskNameError || taskDescriptionError || taskCategoryError || taskStartTimeError || taskEndTimeError || taskDifficultyError) {
+        if (taskNameError || taskStartTimeError || taskEndTimeError || taskDifficultyError) {
             return;
         }
 
