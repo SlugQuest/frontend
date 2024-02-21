@@ -13,7 +13,7 @@ export async function fetchPoints() {
         credentials: 'include'
     });
 
-    const health_response = await fetch(`${BACKEND_URL}/api/v1/task`, {
+    const health_response = await fetch(`${BACKEND_URL}/api/v1/getBossHealth`, {
         method: 'GET',
         credentials: 'include'
     });
@@ -22,6 +22,7 @@ export async function fetchPoints() {
         console.log("Points response is ok");
         const points_data = await points_response.json();
         let points = points_data.points;
+        console.log("Points: " + points);
         user_points.set(points);
     } else {
         console.log("Points response FAILED");
@@ -30,7 +31,8 @@ export async function fetchPoints() {
     if (health_response.ok) {
         console.log("Health response is ok");
         const health_data = await health_response.json();
-        let health = health_data.health;
+        let health = health_data.curr_boss_health;
+        console.log("Health: " + health);
         curr_health.set(health);
     } else {
         console.log("Health response FAILED");
