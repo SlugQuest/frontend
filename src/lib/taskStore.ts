@@ -2,15 +2,18 @@ import { writable } from 'svelte/store';
 import { BACKEND_URL } from './BackendURL';
 
 export type Task = {
-  TaskID: number;
-  UserID: string;
-  Category: string;
-  TaskName: string;
-  StartTime: string;
-  EndTime: string;
-  IsCompleted: boolean;
-  IsRecurring: boolean;
-  IsAllDay: boolean;
+    TaskID: number;
+    UserID: string;
+    Category: string;
+    TaskName: string;
+    Description: string;
+    StartTime: string;
+    EndTime: string;
+    Status: string;
+    IsRecurring: boolean;
+    IsAllDay: boolean;
+    Difficulty: string;
+    CronExpression: string;
 }
 
 async function fetchTasks(): Promise<{ list: Task[] }> {
