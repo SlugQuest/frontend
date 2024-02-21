@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { BACKEND_URL } from './BackendURL';
-    import { taskStore } from './taskStore';
+	import { BACKEND_URL } from './BackendURL';
+	import { taskStore } from './taskStore';
+	import { fetchPoints } from './points.ts';
 
     let showModal = false;
     let taskName = '';
@@ -73,22 +74,22 @@
             CronExpression: cronExpression
         };
 
-        console.log({
-            task
-        })
+		console.log({
+			task
+		});
 
-        const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
-            method: 'POST',
-            credentials: 'include',
-            body: JSON.stringify(task)
-        });
-        if (!response.ok) {
-            console.error('Failed to add task', response);
-        }
+		const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
+			method: 'POST',
+			credentials: 'include',
+			body: JSON.stringify(task)
+		});
+		if (!response.ok) {
+			console.error('Failed to add task', response);
+		}
 
-        // console.log({
-        //     task
-        // });
+		// console.log({
+		//     task
+		// });
 
         clearFields();
         
@@ -99,8 +100,11 @@
     }
 </script>
 
-<button on:click={() => showModal = true} class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 ml-4 border border-gray-300">
-    Add task
+<button
+	on:click={() => (showModal = true)}
+	class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 ml-4 border border-gray-300"
+>
+	Add task
 </button>
 {#if showModal}
 <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
