@@ -3,6 +3,15 @@
 	import { BACKEND_URL } from './BackendURL';
 	import { curr_health, user_points } from './store.ts';
 	import { fetchPoints } from './points.ts';
+	// import { navigate } from 'svelte-routing';
+	let showModal = false;
+	function viewBoss() {
+		showModal = true;
+	}
+
+	function closeModal() {
+		showModal = false;
+	}
 
 	onMount(fetchPoints);
 
@@ -42,10 +51,73 @@
 		<div class="health" style="width: {health_bar}px; height: {height}px;"></div>
 		<div class="text">Health: {currHealth}/{userPoints + currHealth}</div>
 	</div>
-	 <!-- <button on:click={fetchPoints}>Update Points</button> -->
+	<button
+		on:click={viewBoss}
+		class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 ml-4 border border-gray-300"
+		>View Boss</button
+	>
 </footer>
 
+{#if showModal}
+	<div
+		class="fixed z-10 inset-0 overflow-y-auto"
+		aria-labelledby="modal-title"
+		role="dialog"
+		aria-modal="true"
+	>
+		<div
+			class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+		>
+			<div
+				class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+				aria-hidden="true"
+			></div>
+			<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"
+				>&#8203;</span
+			>
+			<div
+				class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+			>
+				<div class="bg-white px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+					<div class="sm:flex sm:items-start">
+						<div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+							<h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+								Boss Battle
+							</h3>
+							<img
+								src="https://media.discordapp.net/attachments/795913458319228939/1210869262319620167/image.png?ex=65ec20e1&is=65d9abe1&hm=5b004a2b40deb598052b321c4c61eda5c405fb4d12f0c93b978c5c01e45c8a5c&=&format=webp&quality=lossless"
+								alt="Boss image"
+								class="mt-4"
+							/>
+						</div>
+						<button
+							type="button"
+							on:click={closeModal}
+							class="inline-flex items-center justify-center h-8 w-8 border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+						>
+							X
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}
+
 <style>
+	.modal {
+		/* Add your modal styles here */
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+	}
 	.container {
 		position: absolute;
 		left: 50%;
