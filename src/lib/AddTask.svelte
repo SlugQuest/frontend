@@ -21,6 +21,9 @@
     let taskStartTimeError = '';
     let taskEndTimeError = '';
     let taskDifficultyError = '';
+    let taskIsRecurringError = '';
+
+    let chronTemp = '';
 
     $: {
         taskNameError = taskName.trim() === '' ? 'Task name is required' : '';
@@ -29,6 +32,7 @@
         taskStartTimeError = taskStartTime.trim() === '' ? 'Start time is required' : '';
         taskEndTimeError = taskEndTime.trim() === '' ? 'End time is required' : '';
         taskDifficultyError = taskDifficulty.trim() === '' ? 'Difficulty is required' : '';
+        taskIsRecurringError = (taskIsRecurring && (chronTemp === '')) ? 'Specify how often task recurs' : '';
 
         if (taskStartTime && taskEndTime) {
             const start = new Date(taskStartTime);
@@ -36,6 +40,28 @@
             if (start >= end) {
                 taskEndTimeError = 'End time must be after start time';
             }
+        }
+    }
+
+    function setCronExpr(expr) {
+        chronTemp = expr;
+    }
+
+    function generateCronExpr(word) {
+        let startTime = new Date(taskStartTime);
+
+        let hour = startTime.getHours();
+        let minute = startTime.getMinutes();
+        let dayOfWeek = startTime.getDay();
+        let dayOfMonth = startTime.getDate();
+        // cron expr format: "{seconds} {minutes} {hours} {day of month} {month} {day of week}"
+        
+        if (word === 'daily') {
+        cronExpression = `0 ${minute} ${hour} * * *`;
+        } else if (word === 'weekly') {
+        cronExpression = `0 ${minute} ${hour} * * ${dayOfWeek}`;
+        } else if (word === 'monthly') {
+        cronExpression = `0 ${minute} ${hour} ${dayOfMonth} * *`;
         }
     }
 
@@ -49,6 +75,7 @@
         taskIsAllDay = false;
         taskDifficulty = '';
         cronExpression = '';
+        chronTemp = '';
     }
 
     function cancel() {
@@ -57,9 +84,11 @@
     }
 
     async function addTask() {
-        if (taskNameError || taskStartTimeError || taskEndTimeError || taskDifficultyError) {
+        if (taskNameError || taskStartTimeError || taskEndTimeError || taskDifficultyError || taskIsRecurringError) {
             return;
         }
+
+        generateCronExpr(chronTemp);
 
         const task = {
             Category: taskCategory,
@@ -133,6 +162,16 @@
                                 <input bind:checked={taskIsRecurring} type="checkbox" />
                                 Is recurring
                             </label>
+                            {#if taskIsRecurring}
+                                <div class="mt-2">
+                                    <div class="mt-2 flex">
+                                    <button class="px-4 py-2 border rounded-l-md {chronTemp === 'daily' ? 'bg-gray-300' : ''}" on:click={() => setCronExpr('daily')}>Daily</button>
+                                    <button class= "px-4 py-2 border-t border-b {chronTemp === 'weekly' ? 'bg-gray-300' : ''}" on:click={() => setCronExpr('weekly')}>Weekly</button>
+                                    <button class= "px-4 py-2 border rounded-r-md {chronTemp === 'monthly' ? 'bg-gray-300' : ''}" on:click={() => setCronExpr('monthly')}>Monthly</button>
+                                    </div>
+                                </div>        
+                                {#if taskIsRecurringError}<p class="error">{taskIsRecurringError}</p>{/if}
+                            {/if}
                             <label>
                                 <input bind:checked={taskIsAllDay} type="checkbox" />
                                 Is all day
@@ -167,6 +206,9 @@
     .error {
         color: red;
     }
+    .btn-group button {
+    margin: 0 5px;
+  }
     /* .error, input, textarea {
         width: 100%;
     } */

@@ -133,10 +133,17 @@
         <div class="modal-content">
             <button class="close-button" on:click={toggleModal}>X</button>
             {#each fieldOrder as field}
-                <div class="task-field">
+                {#if field === 'ChronExpression'}
+                    {#if task.Status === 'active'}
+                        <div class="task-field">
+                            <label>{formatFieldName(field)}</label>
+                            <p>{cronstrue.toString(task.CronExpression)}</p>
+                        </div>
+                    {/if}
+                {:else}
                     <label>{formatFieldName(field)}</label>
                     <p>{field === 'StartTime' || field === 'EndTime' ? formatDateTime(task[field]) : task[field]}</p>
-                </div>
+                {/if}
             {/each}
             <div class="button-group">
                 <button class="delete-button" on:click={deleteTask}>Delete Task</button>

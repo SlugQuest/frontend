@@ -37,7 +37,8 @@
 	"type": "module",
 	"dependencies": {
 		"@event-calendar/core": "^2.6.1",
+		"@event-calendar/interaction": "^2.6.1",
 		"@event-calendar/time-grid": "^2.6.1",
-		"@event-calendar/interaction": "^2.6.1"
+		"construe": "^0.4.1"
 	}
 }
