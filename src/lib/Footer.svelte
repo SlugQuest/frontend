@@ -1,9 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import { BACKEND_URL } from './BackendURL';
-	import { curr_health, user_points } from './store.ts';
+	import { curr_health, user_points, boss_name, boss_image } from './store.ts';
 	import { fetchPoints } from './points.ts';
-	// import { navigate } from 'svelte-routing';
 	let showModal = false;
 	function viewBoss() {
 		showModal = true;
@@ -25,15 +24,18 @@
 		userPoints = value;
 	});
 
+	let bossName;
+	boss_name.subscribe((value) => {
+		bossName = value;
+	});
+
+	let bossImage;
+	boss_image.subscribe((value) => {
+		bossImage = value;
+	});
+
 	let height = 25;
 	let bar = 600;
-	// let x = 0;
-	// let y = 0;
-	// $: x = userPoints;
-	// console.log(x);
-
-	// $: y = currHealth;
-	// console.log(y);
 
 	console.log(userPoints);
 	console.log(currHealth);
@@ -82,10 +84,10 @@
 					<div class="sm:flex sm:items-start">
 						<div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
 							<h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
-								Boss Battle
+								{bossName}
 							</h3>
 							<img
-								src="https://media.discordapp.net/attachments/795913458319228939/1210869262319620167/image.png?ex=65ec20e1&is=65d9abe1&hm=5b004a2b40deb598052b321c4c61eda5c405fb4d12f0c93b978c5c01e45c8a5c&=&format=webp&quality=lossless"
+								src={bossImage}
 								alt="Boss image"
 								class="mt-4"
 							/>
