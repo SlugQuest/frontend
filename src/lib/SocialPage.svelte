@@ -3,24 +3,24 @@
     import { onMount } from 'svelte';
   
     let friends = [];
-    let leaderboard = [];
+    
+    async function getFriends() {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/v1/user/friends`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            friends = data.list;
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     let teams = [];
   
     onMount(async () => {
-      // Fetch friends, leaderboard, and teams data from your API or data source here
-      // These are just placeholders
-      friends = [
-        'Friend 1', 'Friend 2', 'Friend 3'
-    ];
-      leaderboard = [
-        { name: 'Friend 1', score: 100 },
-        { name: 'Friend 2', score: 90 },
-        { name: 'Friend 3', score: 80 },
-      ];
-      teams = [
-        { name: 'Team 1', members: ['Member 1', 'Member 2'] },
-        { name: 'Team 2', members: ['Member 3', 'Member 4'] },
-      ];
+        await getFriends();
     });
   
     function goBack() {
@@ -48,12 +48,12 @@
       <div>
         <h2 class="section-header text-2xl">Friends</h2>
         <ul>
-          {#each friends as friend (friend)}
-            <li>{friend}</li>
-          {/each}
-        </ul>
+            {#each friends as friend (friend.Username)}
+              <li>{friend.Username}</li>
+            {/each}
+          </ul>
         {#if friends.length === 0}
-          <p>Looks like you have no friends. How sad!</p>
+          <p>No friends to display</p>
         {/if}
         <div>
             <button class="btn mt-2">Add Friend</button>
@@ -76,19 +76,19 @@
       </div>
   
       <div>
-        <h2 class="section-header text-2xl">Leaderboard</h2>
+        <h2 class="text-2xl">Leaderboard</h2>
         <table class="leaderboard">
           <thead>
             <tr>
               <th>Name</th>
-              <th>Score</th>
+              <th>Points</th>
             </tr>
           </thead>
           <tbody>
-            {#each leaderboard as entry (entry.name)}
+            {#each [...friends].sort((a, b) => b.Points - a.Points) as friend (friend.Username)}
               <tr>
-                <td>{entry.name}</td>
-                <td>{entry.score}</td>
+                <td>{friend.Username}</td>
+                <td>{friend.Points}</td>
               </tr>
             {/each}
           </tbody>
