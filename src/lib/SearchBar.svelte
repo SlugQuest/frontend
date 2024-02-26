@@ -8,10 +8,14 @@
 
 	function open() {
 		showModal = true;
+		newModal = false;
+		search_results = [];
+		searchQuery = '';
 	}
 
 	function openNew() {
 		newModal = true;
+		showModal = false;
 	}
 
 	function close() {
@@ -21,21 +25,33 @@
 
 	function closeNew() {
 		newModal = false;
+		search_results = [];
+		searchQuery = '';
 	}
 
-	async function search() {
+	async function search(num) {
 		console.log(searchQuery);
-		const search_response = await fetch(`${BACKEND_URL}/api/v1/searchuser/name/` + searchQuery, {
+		let path = '/api/v1/searchuser/';
+		if (num == 0) {
+			path += 'name/';
+		} else if (num == 1) {
+			path += 'code/';
+		} else {
+			
+		}
+		const search_response = await fetch(`${BACKEND_URL}${path}` + searchQuery, {
 			method: 'GET',
 			credentials: 'include'
 		});
-
+		
 		if (search_response.ok) {
 			const search_data = await search_response.json();
 			console.log(search_data);
 			let num_results = search_data.num_results;
 			for (let i = 0; i < num_results; i++) {
-				search_results.push(search_data.users[i].Username);
+				let pair = [search_data.users[i].Username, search_data.users[i].SoicalCode];
+				console.log(pair);
+				search_results.push(pair);
 			}
 			console.log(search_results);
 			if (num_results > 0) {
@@ -50,15 +66,15 @@
 		}
 	}
 
-	async function addFriend() {
-		const add_response = await fetch(`${BACKEND_URL}/api/v1/addFreind/add/` + searchQuery, {
+	async function addFriend(friend) {
+		console.log('ITS WORKINGNNNNN ' + friend);
+		const add_response = await fetch(`${BACKEND_URL}/api/v1/addFreind/` + friend[1], {
 			method: 'POST',
 			credentials: 'include'
 		});
 
 		if (add_response.ok) {
-			const add_data = await add_response.json();
-			console.log(add_data);
+			console.log('Success');
 		} else {
 			console.log('Error');
 		}
@@ -102,10 +118,17 @@
 				</button>
 				<button
 					type="button"
-					on:click={search}
+					on:click={() => search(0)}
 					class="mr-2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
 				>
-					Search
+					Search by name
+				</button>
+				<button
+					type="button"
+					on:click={() => search(1)}
+					class="mr-2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+				>
+					Search by code
 				</button>
 			</div>
 		</div>
@@ -128,10 +151,10 @@
 		>
 			{#each search_results as result (result)}
 				<div class="mt-2 flex justify-between items-center border border-gray-300 p-2 rounded">
-					<div>{result}</div>
+					<div>{result[0]}#{result[1]}</div>
 					<button
 						type="button"
-						on:click={search}
+						on:click={() => addFriend(result)}
 						class="mr-2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
 					>
 						Add
