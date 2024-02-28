@@ -17,6 +17,22 @@
         }
     }
 
+    async function removeFriend(name, code) {
+        if (confirm(`Are you sure you want to remove ${name} as a friend?`)) {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/v1/removeFriend/${code}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    }
+
     let teams = [];
   
     onMount(async () => {
@@ -48,10 +64,13 @@
       <div>
         <h2 class="section-header text-2xl">Friends</h2>
         <ul>
-            {#each friends as friend (friend.Username)}
-              <li>{friend.Username}</li>
+            {#each friends as friend (friend.Username, friend.SocialCode)}
+                <li>
+                    <span>{friend}</span>
+                    <button class="remove-button" on:click={() => removeFriend(friend)}>x</button>
+                </li>
             {/each}
-          </ul>
+        </ul>
         {#if friends.length === 0}
           <p>No friends to display</p>
         {/if}
@@ -137,6 +156,12 @@
     .section-header {
     font-size: 24px;
     font-weight: bolder;
+  }
+  .remove-button {
+    color: red;
+    border: none;
+    background: none;
+    cursor: pointer;
   }
 
   </style>
