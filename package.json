@@ -34,5 +34,10 @@
 		"vite": "^5.0.3",
 		"vitest": "^1.2.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@event-calendar/core": "^2.6.1",
+		"@event-calendar/interaction": "^2.6.1",
+		"@event-calendar/time-grid": "^2.6.1"
+	}
 }

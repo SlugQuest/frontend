@@ -1,27 +1,52 @@
 <script lang="ts">
     import { BACKEND_URL } from './BackendURL';
-    import { taskStore } from './taskStore';
+    import { taskStore, type Task } from './taskStore';
     import { writable } from 'svelte/store';
 
-    export let task: {
-        TaskID: number;
-        UserID: string;
-        Category: string;
-        TaskName: string;
-        Description: string;
-        StartTime: string;
-        EndTime: string;
-        Status: string;
-        IsRecurring: boolean;
-        IsAllDay: boolean;
-        Difficulty: string;
-        CronExpression: string;
-    }
+    export let task: Task
 
     let showModal = false;
 
     let editModal = writable(false);
-    let editTask = {};
+    let editTask = {
+        ...task
+    };
+
+    let taskNameError = '';
+    let taskDescriptionError = '';
+    let taskCategoryError = '';
+    let taskStartTimeError = '';
+    let taskEndTimeError = '';
+    let taskDifficultyError = '';
+
+        
+    $: {
+        if (editTask.TaskName !== undefined) {
+            taskNameError = editTask.TaskName.trim() === '' ? 'Task name is required' : '';
+        }
+        if (editTask.Description !== undefined) {
+            taskDescriptionError = editTask.Description.trim() === '' ? 'Task description is required' : '';
+        }
+        if (editTask.Category !== undefined) {
+            taskCategoryError = editTask.Category.trim() === '' ? 'Task category is required' : '';
+        }
+        if (editTask.StartTime !== undefined) {
+            taskStartTimeError = editTask.StartTime.trim() === '' ? 'Start time is required' : '';
+        }
+        if (editTask.EndTime !== undefined) {
+            taskEndTimeError = editTask.EndTime.trim() === '' ? 'End time is required' : '';
+        }
+        if (editTask.Difficulty !== undefined) {
+            taskDifficultyError = editTask.Difficulty.trim() === '' ? 'Difficulty is required' : '';
+        }
+        if (editTask.StartTime && editTask.EndTime) {
+            const start = new Date(editTask.StartTime);
+            const end = new Date(editTask.EndTime);
+            if (start >= end) {
+                taskEndTimeError = 'End time must be after start time';
+            }
+        }
+    }
 
     function toggleModal() {
         showModal = !showModal;
@@ -63,12 +88,17 @@
     }
 
     function formatDateTime(dateTime) {
-        const date = new Date(dateTime);
-        return date.toLocaleString();
+        if (dateTime) {
+            return dateTime.substring(0, dateTime.length - 4);
+        }
+        return null;
     }
 
     function openEditModal() {
         editTask = { ...task };
+        editTask.StartTime = formatDateTime(editTask.StartTime);
+        editTask.EndTime = formatDateTime(editTask.EndTime);
+        console.log(editTask);
         editModal.set(true);
     }
 
@@ -77,9 +107,12 @@
     }
 
     async function saveTask() {
+        editTask.StartTime = editTask.StartTime + ":00Z"
+        editTask.EndTime = editTask.EndTime + ":00Z"
         const response = await fetch(`${BACKEND_URL}/api/v1/task/${task.TaskID}`, {
             method: 'PUT',
             credentials: 'include',
+            body: JSON.stringify(editTask)
         });
 
         if (!response.ok) {
@@ -87,6 +120,22 @@
         }
         taskStore.prepareTasks();
         closeEditModal();
+    }
+
+    function cronToString(cron) {
+        const [second, minute, hour, dayOfMonth, month, dayOfWeek] = cronExpression.split(' ');
+
+        let result = '';
+
+        if (dayOfWeek !== '*') {
+            result = `Every ${dayOfWeek} at ${hour}:${minute}`;
+        } else if (dayOfMonth !== '*') {
+            result = `Every ${dayOfMonth} of the month at ${hour}:${minute}`;
+        } else {
+            result = `Every day at ${hour}:${minute}`;
+        }
+
+        return result;
     }
 
     const fieldOrder = ['TaskName', 'Description', 'Category', 'StartTime', 'EndTime', 'IsRecurring', 'Status', 'IsAllDay', 'Difficulty'];
@@ -107,10 +156,17 @@
         <div class="modal-content">
             <button class="close-button" on:click={toggleModal}>X</button>
             {#each fieldOrder as field}
-                <div class="task-field">
+                {#if field === 'CronExpression'}
+                    {#if task.IsRecurring}
+                        <div class="task-field">
+                            <label>{formatFieldName(field)}</label>
+                            <p>{cronToString(task.CronExpression)}</p>
+                        </div>
+                    {/if}
+                {:else}
                     <label>{formatFieldName(field)}</label>
                     <p>{field === 'StartTime' || field === 'EndTime' ? formatDateTime(task[field]) : task[field]}</p>
-                </div>
+                {/if}
             {/each}
             <div class="button-group">
                 <button class="delete-button" on:click={deleteTask}>Delete Task</button>
@@ -132,18 +188,29 @@
                         {#if field === 'Difficulty'}
                             <label>{formatFieldName(field)}</label>
                             <div class="mt-2 flex">
-                                <button on:click={() => editTask[field] = 'easy'} class="px-4 py-2 border rounded-l-md {editTask[field] === 'easy' ? 'bg-gray-300' : ''}">Easy</button>
-                                <button on:click={() => editTask[field] = 'medium'} class="px-4 py-2 border-t border-b {editTask[field] === 'medium' ? 'bg-gray-300' : ''}">Medium</button>
-                                <button on:click={() => editTask[field] = 'hard'} class="px-4 py-2 border rounded-r-md {editTask[field] === 'hard' ? 'bg-gray-300' : ''}">Hard</button>
+                                <button on:click={() => editTask.Difficulty = 'easy'} class="px-4 py-2 border rounded-l-md {editTask.Difficulty === 'easy' ? 'bg-gray-300' : ''}">Easy</button>
+                                <button on:click={() => editTask.Difficulty = 'medium'} class="px-4 py-2 border-t border-b {editTask.Difficulty === 'medium' ? 'bg-gray-300' : ''}">Medium</button>
+                                <button on:click={() => editTask.Difficulty = 'hard'} class="px-4 py-2 border rounded-r-md {editTask.Difficulty === 'hard' ? 'bg-gray-300' : ''}">Hard</button>
                             </div>
-                        {:else if field === 'StartTime' || field === 'EndTime'}
+                            {#if taskDifficultyError}<p class="error">{taskDifficultyError}</p>{/if}
+                        {:else if field === 'StartTime'}
                             <label>{formatFieldName(field)}</label>
                             <input bind:value={editTask[field]} class="w-full px-2 py-1 border rounded-md mt-2" type="datetime-local" />
+                        {:else if field === 'EndTime'}
+                            <label>{formatFieldName(field)}</label>
+                            <input bind:value={editTask[field]} class="w-full px-2 py-1 border rounded-md mt-2" type="datetime-local" />
+                            {#if taskEndTimeError}<p class="error">{taskEndTimeError}</p>{/if}
                         {:else if field === 'IsAllDay' || field === 'IsRecurring'}
                             <label class="checkbox-label">
                                 {formatFieldName(field)}
                                 <input type="checkbox" bind:checked={editTask[field]} />
                             </label>
+                        {:else if field === 'TaskName'}
+                            <label>{formatFieldName(field)}</label>
+                            <input class="input-field" bind:value={editTask[field]} />
+                            {#if taskNameError}<p class="error text-left">{taskNameError}</p>{/if}
+                        {:else if field === 'CronExpression'}
+                        <!-- Nothing here -->
                         {:else}
                             <label>{formatFieldName(field)}</label>
                             <input class="input-field" bind:value={editTask[field]} />
@@ -271,5 +338,8 @@
         margin: 20px 2px;
         cursor: pointer;
         border-radius: 5px;
+    }
+    .error {
+        color: red;
     }
 </style>
