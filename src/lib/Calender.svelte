@@ -31,14 +31,15 @@
 	};
 
 	function convert_task(task: Task): Event {
+    const editable = !task.IsRecurring;
 		return {
 			start: task.StartTime,
 			end: task.EndTime,
 			resourceId: task.TaskID,
 			display: 'default',
-			startEditable: true,
-			durationEditable: true,
-			editable: true,
+			startEditable: editable,
+			durationEditable: editable,
+			editable,
 			title: task.TaskName,
 			allDay: task.IsAllDay
 		};
@@ -122,6 +123,15 @@
 		eventDrop: update_callback,
 		eventClick: (info: Info) => {
 			let index = task_models.findIndex((task_model) => task_model.id == info.event.resourceIds[0]);
+      let task = convert_event(info.event);
+      if (task === undefined) {
+        console.log('Task not found');
+        return;
+      }
+      if (task.IsRecurring) {
+        console.log('Recurring task');
+        return;
+      }
 			task_models[index].open = true;
 		}
 	};
