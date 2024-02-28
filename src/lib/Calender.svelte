@@ -44,13 +44,24 @@
 		};
 	}
 
-	function convert_event(event: GetEvent): Task {
-		let prev_task = taskStore.getTask(event.resourceIds[0]);
+	function convert_event(event: GetEvent): Task | undefined {
+    console.log(event);
+    let index_int = parseInt(event.resourceIds[0]);
+		let prev_task = taskStore.getTask(index_int);
+    if (prev_task === undefined) {
+      console.log('Task not found');
+      return;
+    }
+    let start = new Date(event.start).toISOString();
+    start = start.replace('.000', '');
+    let end = new Date(event.end).toISOString();
+    end = end.replace('.000', '');
+    console.log(start, end);
 		return {
-			TaskID: event.resourceIds[0],
-			StartTime: event.start,
-			EndTime: event.end,
-			...prev_task
+      ...prev_task,
+			TaskID: index_int,
+			StartTime: start,
+			EndTime: end,
 		};
 	}
 
@@ -63,7 +74,7 @@
 	type GetEvent = {
 		start: string;
 		end: string;
-		resourceIds: number[];
+		resourceIds: string[];
 		display: string;
 		startEditable: boolean;
 		durationEditable: boolean;
@@ -88,6 +99,10 @@
 
 	function update_callback(info: Info) {
 		let task = convert_event(info.event);
+    if (task === undefined) {
+      console.log('Task not found');
+      return;
+    }
 		taskStore.updateTask(task);
 	}
 

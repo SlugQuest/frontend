@@ -38,11 +38,38 @@ function createTaskStore() {
       const fetchedTasks = await fetchTasks();
       set(fetchedTasks.list); // set the list property of fetchedTasks to the taskStore
     },
-    updateTask: (task: Task) => update(tasks => {
-      const index = tasks.findIndex(t => t.TaskID.toString() === task.TaskID.toString());
-      tasks[index] = task;
-      return tasks;
-    }),
+    updateTask: async (task: Task) => {
+      console.log('task', task);
+      /*
+            "TaskID":         1,
+            "UserID":         "testUserId",
+            "Category":       "yo",
+            "TaskName":       "New Task",
+            "Description":    "Description of the new task",
+            "StartTime":      "2024-01-01T08:00:00Z",
+            "EndTime":        "2024-01-01T17:00:00Z",
+            "Status":         "completed",
+            "IsRecurring":    false,
+            "IsAllDay":       false,
+            "Difficulty":     "easy",
+            "CronExpression": "" //for now, recurring functions are not supported
+      */
+      let request = {
+        task: task
+      };
+      let str = JSON.stringify(request);
+      console.log('str', str);
+      // /api/v1/task/:id
+      let result = await fetch(`${BACKEND_URL}/api/v1/task/${task.TaskID}`, {
+        method: 'PUT',
+        credentials: 'include',
+        body: str,
+      });
+      console.log('result', result);
+      let new_tasks = await fetchTasks();
+      console.log('new_tasks', new_tasks.list[0]);
+      set(new_tasks.list);
+    },
     getTask: (id: number): Task | undefined => {
       let task: Task | undefined;
       update(tasks => {
