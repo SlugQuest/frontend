@@ -37,13 +37,12 @@
 		} else if (num == 1) {
 			path += 'code/';
 		} else {
-			
 		}
 		const search_response = await fetch(`${BACKEND_URL}${path}` + searchQuery, {
 			method: 'GET',
 			credentials: 'include'
 		});
-		
+
 		if (search_response.ok) {
 			const search_data = await search_response.json();
 			console.log(search_data);
@@ -68,13 +67,14 @@
 
 	async function addFriend(friend) {
 		console.log('ITS WORKINGNNNNN ' + friend);
-		const add_response = await fetch(`${BACKEND_URL}/api/v1/addFreind/` + friend[1], {
+		const add_response = await fetch(`${BACKEND_URL}/api/v1/addFriend/` + friend[1], {
 			method: 'POST',
 			credentials: 'include'
 		});
 
 		if (add_response.ok) {
 			console.log('Success');
+			closeNew();
 		} else {
 			console.log('Error');
 		}
