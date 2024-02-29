@@ -6,6 +6,8 @@
     import { onMount } from 'svelte';
     import TaskCard from './TaskCard.svelte';
 
+    import { categoryStore } from './categoryStore';
+
     onMount(async () => {
         taskStore.prepareTasks();
     });
@@ -18,7 +20,11 @@
         <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {#if Array.isArray($taskStore) && $taskStore.length > 0}
                 {#each $taskStore as task (task.TaskID)}
+                  {#if $categoryStore === task.Category}
                     <TaskCard {task} />
+                  {:else if $categoryStore === undefined}
+                    <TaskCard {task} />
+                  {/if}
                 {/each}
             {:else}
                 <p>No tasks to display</p>

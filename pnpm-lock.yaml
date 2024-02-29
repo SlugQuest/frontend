@@ -14,9 +14,6 @@ dependencies:
   '@event-calendar/time-grid':
     specifier: ^2.6.1
     version: 2.6.1
-  construe:
-    specifier: ^0.4.1
-    version: 0.4.1
 
 devDependencies:
   '@sveltejs/adapter-auto':
@@ -1083,12 +1080,6 @@ packages:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
 
-  /construe@0.4.1:
-    resolution: {integrity: sha512-rTVVqy6yOUIMi7XHphxLIltCQ272Fl1uyRBvQemi0fMKXj4xEbDkConDEqFvb2zivTKMJuAGb0GUqxaMObumvw==}
-    dependencies:
-      final-events: 0.5.0
-    dev: false
-
   /cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
@@ -1451,10 +1442,6 @@ packages:
     dependencies:
       to-regex-range: 5.0.1
     dev: true
-
-  /final-events@0.5.0:
-    resolution: {integrity: sha512-ac6NAIIrFeBtvPByRnv1Xb6E8KitHbVJZD+vNZnjX0dD8NnQ3ONSfAsS7HUWWxbGJOTud+kOFkJF7+lvi9zwZw==}
-    dev: false
 
   /find-up@5.0.0:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}

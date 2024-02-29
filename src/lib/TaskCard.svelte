@@ -88,12 +88,16 @@
     }
 
     function formatDateTime(dateTime) {
-        const date = new Date(dateTime);
-        return date.toLocaleString();
+        if (dateTime) {
+            return dateTime.substring(0, dateTime.length - 4);
+        }
+        return null;
     }
 
     function openEditModal() {
         editTask = { ...task };
+        editTask.StartTime = formatDateTime(editTask.StartTime);
+        editTask.EndTime = formatDateTime(editTask.EndTime);
         console.log(editTask);
         editModal.set(true);
     }
@@ -103,9 +107,12 @@
     }
 
     async function saveTask() {
+        editTask.StartTime = editTask.StartTime + ":00Z"
+        editTask.EndTime = editTask.EndTime + ":00Z"
         const response = await fetch(`${BACKEND_URL}/api/v1/task/${task.TaskID}`, {
             method: 'PUT',
             credentials: 'include',
+            body: JSON.stringify(editTask)
         });
 
         if (!response.ok) {
@@ -113,6 +120,22 @@
         }
         taskStore.prepareTasks();
         closeEditModal();
+    }
+
+    function cronToString(cron) {
+        const [second, minute, hour, dayOfMonth, month, dayOfWeek] = cronExpression.split(' ');
+
+        let result = '';
+
+        if (dayOfWeek !== '*') {
+            result = `Every ${dayOfWeek} at ${hour}:${minute}`;
+        } else if (dayOfMonth !== '*') {
+            result = `Every ${dayOfMonth} of the month at ${hour}:${minute}`;
+        } else {
+            result = `Every day at ${hour}:${minute}`;
+        }
+
+        return result;
     }
 
     const fieldOrder = ['TaskName', 'Description', 'Category', 'StartTime', 'EndTime', 'IsRecurring', 'Status', 'IsAllDay', 'Difficulty'];
@@ -133,11 +156,11 @@
         <div class="modal-content">
             <button class="close-button" on:click={toggleModal}>X</button>
             {#each fieldOrder as field}
-                {#if field === 'ChronExpression'}
-                    {#if task.Status === 'active'}
+                {#if field === 'CronExpression'}
+                    {#if task.IsRecurring}
                         <div class="task-field">
                             <label>{formatFieldName(field)}</label>
-                            <p>{cronstrue.toString(task.CronExpression)}</p>
+                            <p>{cronToString(task.CronExpression)}</p>
                         </div>
                     {/if}
                 {:else}
@@ -186,6 +209,8 @@
                             <label>{formatFieldName(field)}</label>
                             <input class="input-field" bind:value={editTask[field]} />
                             {#if taskNameError}<p class="error text-left">{taskNameError}</p>{/if}
+                        {:else if field === 'CronExpression'}
+                        <!-- Nothing here -->
                         {:else}
                             <label>{formatFieldName(field)}</label>
                             <input class="input-field" bind:value={editTask[field]} />
