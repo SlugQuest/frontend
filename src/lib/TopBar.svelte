@@ -1,9 +1,9 @@
 <script lang="ts">
-    import LogOutButton from './LogOutButton.svelte';
-    import AddTask from './AddTask.svelte';
-    
-    export let title: string;
+	import LogOutButton from './LogOutButton.svelte';
+	import AddTask from './AddTask.svelte';
+	import Search from './SearchBar.svelte';
 
+	export let title: string;
     function goToSocial() {
         window.location.href = '/loggedin/social';
     }
@@ -23,5 +23,7 @@
         </button>
         <AddTask />
         <LogOutButton />
+        <Search />
     </div>
 </header>
+
