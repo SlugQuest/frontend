@@ -83,9 +83,9 @@
 
 <button
 	on:click={open}
-	class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 ml-4 border border-gray-300"
+	class="btn mt-2"
 >
-	Add Friends
+	Add Friend
 </button>
 
 {#if showModal}
@@ -173,3 +173,20 @@
 		</div>
 	</div>
 {/if}
+
+<style>
+    .btn {
+      padding: 5px 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+  
+    .btn:hover {
+      background-color: #0056b3;
+    }
+</style>
