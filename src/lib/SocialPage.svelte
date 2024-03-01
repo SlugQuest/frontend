@@ -1,6 +1,8 @@
 <script script="ts">
     import { BACKEND_URL } from './BackendURL';
     import { onMount } from 'svelte';
+    import SearchBar from './SearchBar.svelte';
+	import Teams from './Teams.svelte';
   
     let friends = [];
     
@@ -32,8 +34,6 @@
             }
         }
     }
-
-    let teams = [];
   
     onMount(async () => {
         await getFriends();
@@ -75,24 +75,11 @@
           <p>No friends to display</p>
         {/if}
         <div>
-            <button class="btn mt-2">Add Friend</button>
+            <SearchBar />
         </div>
       </div>
-  
-      <div>
-        <h2 class="section-header text-2xl">Teams</h2>
-        {#each teams as team (team.name)}
-          <div>
-            <h3 class="team-name">{team.name}</h3>
-            <ul>
-              {#each team.members as member (member)}
-                <li class="member-name">{member}</li>
-              {/each}
-            </ul>
-          </div>
-        {/each}
-        <button class="btn mt-2" on:click={createTeam}>Create Team</button> 
-      </div>
+
+      <Teams />
   
       <div>
         <h2 class="text-2xl">Leaderboard</h2>
