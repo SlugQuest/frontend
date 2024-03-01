@@ -1,14 +1,13 @@
 <script lang="ts">
 	import LogOutButton from './LogOutButton.svelte';
 	import AddTask from './AddTask.svelte';
-	import Search from './SearchBar.svelte';
 
 	export let title: string;
     function goToSocial() {
         window.location.href = '/loggedin/social';
     }
     function goToCalendar() {
-        window.location.href = '/calendar';
+        window.location.href = '/calender';
     }
 </script>
 
@@ -23,7 +22,6 @@
         </button>
         <AddTask />
         <LogOutButton />
-        <Search />
     </div>
 </header>
 
