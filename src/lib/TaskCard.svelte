@@ -89,7 +89,8 @@
 
     function formatDateTime(dateTime) {
         if (dateTime) {
-            return dateTime.substring(0, dateTime.length - 4);
+            let formattedDateTime = dateTime.substring(0, dateTime.length - 4);
+            return formattedDateTime.replace('T', ' ');
         }
         return null;
     }
@@ -122,17 +123,30 @@
         closeEditModal();
     }
 
-    function cronToString(cron) {
-        const [second, minute, hour, dayOfMonth, month, dayOfWeek] = cronExpression.split(' ');
+    function addSuffixToDay(day) {
+    if (day % 10 == 1 && day != 11) {
+        return day + "st";
+    } else if (day % 10 == 2 && day != 12) {
+        return day + "nd";
+    } else if (day % 10 == 3 && day != 13) {
+        return day + "rd";
+    } else {
+        return day + "th";
+    }
+}
 
+    function cronToString(cron) {
+        const [second, minute, hour, dayOfMonth, month, dayOfWeek] = cron.split(' ');
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        
         let result = '';
 
         if (dayOfWeek !== '*') {
-            result = `Every ${dayOfWeek} at ${hour}:${minute}`;
+            result = `Every ${days[dayOfWeek]} at ${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
         } else if (dayOfMonth !== '*') {
-            result = `Every ${dayOfMonth} of the month at ${hour}:${minute}`;
+            result = `On the ${addSuffixToDay(dayOfMonth)} day of every month at ${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
         } else {
-            result = `Every day at ${hour}:${minute}`;
+            result = `Every day at ${hour.padStart(2, '0')}:${minute.padStart(2, '0')   }`;
         }
 
         return result;
@@ -155,19 +169,30 @@
     <div class="modal-background">
         <div class="modal-content">
             <button class="close-button" on:click={toggleModal}>X</button>
-            {#each fieldOrder as field}
-                {#if field === 'CronExpression'}
-                    {#if task.IsRecurring}
-                        <div class="task-field">
-                            <label>{formatFieldName(field)}</label>
-                            <p>{cronToString(task.CronExpression)}</p>
-                        </div>
-                    {/if}
-                {:else}
-                    <label>{formatFieldName(field)}</label>
-                    <p>{field === 'StartTime' || field === 'EndTime' ? formatDateTime(task[field]) : task[field]}</p>
+            <div class = "task-field">
+                <label>Task Name</label>
+                <p>{task.TaskName}</p>
+                <label>Description</label>
+                <p>{task.Description}</p>
+                <label>Category</label>
+                <p>{task.Category}</p>
+                <label>Start Time</label>
+                <p>{formatDateTime(task.StartTime)}</p>
+                <label>End Time</label>
+                <p>{formatDateTime(task.EndTime)}</p>
+                <label>Is All Day</label>
+                <p>{task.IsAllDay ? 'Yes' : 'No'}</p>
+                <label>Is Recurring</label>
+                <p>{task.IsRecurring ? 'Yes' : 'No'}</p>
+                {#if task.IsRecurring}
+                    <label>Cron Expression</label>
+                    <p>{cronToString(task.CronExpression)}</p>
                 {/if}
-            {/each}
+                <label>Status</label>
+                <p>{task.Status}</p>
+                <label>Difficulty</label>
+                <p>{task.Difficulty}</p>
+            </div>
             <div class="button-group">
                 <button class="delete-button" on:click={deleteTask}>Delete Task</button>
                 <button class="fail-button" on:click={failTask}>Fail Task</button>
@@ -292,6 +317,10 @@
     .button-group {
         display: flex;
         justify-content: space-between;
+    }
+
+    .task-field label {
+        font-weight: bold;
     }
 
     .fail-button, .complete-button {
