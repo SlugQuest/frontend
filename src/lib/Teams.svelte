@@ -1,11 +1,17 @@
 <script lang="ts">
+	import { get } from 'svelte/store';
     import { BACKEND_URL } from './BackendURL';
 
     let newTeamName = '';
 
-    let teams = [];
+    let teams = [
+        { name: 'Team 1', members: ['Alice', 'Bob'] },
+        { name: 'Team 2', members: ['Charlie', 'Dave'] },
+    ];
 
     let showTeamCreationModal = false;
+    let newMemberName = '';
+
 
     function teamCreationModal() {
         showTeamCreationModal = true;
@@ -23,7 +29,7 @@
         }
         try {
             const response = await fetch(`${BACKEND_URL}/createTeam/${newTeamName}`, {
-                method: 'POST',
+                method: 'PUT',
                 credentials: 'include',
             });
             if (!response.ok) {
@@ -32,7 +38,54 @@
         } catch (error) {
             console.error('Error:', error);
         }
+        getUserTeams();
         closeTeamCreationModal();
+    }
+
+    async function deleteTeam(teamID) {
+        try {
+            const response = await fetch(`${BACKEND_URL}/deleteTeam/${teamID}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        getUserTeams();
+    }
+
+    async function deleteTeamUser(teamID, socialCode) {
+        try {
+            const response = await fetch(`${BACKEND_URL}/deleteTeamUser/${teamID}/${socialCode}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        getUserTeams();
+    }
+
+    async function getUserTeams() {
+        try {
+            const response = await fetch(`${BACKEND_URL}/getUserTeams`, {
+                method: 'GET',
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            teams = data.teams;
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
     
 </script>
@@ -41,11 +94,18 @@
     <h2 class="section-header text-2xl">Teams</h2>
     {#each teams as team (team.name)}
       <div>
-        <h3 class="team-name">{team.name}</h3>
+        <h3 class="team-name">
+            <span>{team.name}</span> 
+            <button class="remove-button" on:click={() => deleteTeam(team)}>x</button>
+        </h3>
         <ul>
           {#each team.members as member (member)}
-            <li class="member-name">{member}</li>
+            <li>
+                <span class="member-name">{member}</span> 
+                <button class="remove-button" on:click={() => deleteMember(team, member)}>x</button>
+            </li>
           {/each}
+          <li><span class="member-name"></span><button on:click={() => openAddMemberModal(team)}>+</button></li>
         </ul>
       </div>
     {/each}
@@ -97,6 +157,10 @@
     z-index: 1000;
   }
 
+  .member-name {
+    margin-left: 20px;
+  }
+
   .modal-content {
     background: white;
     padding: 1em;
@@ -120,5 +184,12 @@
   .button-container {
     display: flex;
     width: 100%;
+  }
+
+  .remove-button {
+    color: red;
+    border: none;
+    background: none;
+    cursor: pointer;
   }
 </style>
