@@ -5,13 +5,12 @@
     let newTeamName = '';
 
     let teams = [
-        { name: 'Team 1', members: ['Alice', 'Bob'] },
-        { name: 'Team 2', members: ['Charlie', 'Dave'] },
+        // { name: 'Team 1', members: ['Alice', 'Bob'] },
+        // { name: 'Team 2', members: ['Charlie', 'Dave'] },
     ];
 
     let showTeamCreationModal = false;
     let newMemberName = '';
-
 
     function teamCreationModal() {
         showTeamCreationModal = true;
@@ -28,7 +27,7 @@
             return;
         }
         try {
-            const response = await fetch(`${BACKEND_URL}/createTeam/${newTeamName}`, {
+            const response = await fetch(`${BACKEND_URL}/api/v1/createTeam/${newTeamName}`, {
                 method: 'PUT',
                 credentials: 'include',
             });
@@ -44,7 +43,7 @@
 
     async function deleteTeam(teamID) {
         try {
-            const response = await fetch(`${BACKEND_URL}/deleteTeam/${teamID}`, {
+            const response = await fetch(`${BACKEND_URL}/api/v1/deleteTeam/${teamID}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -59,7 +58,7 @@
 
     async function deleteTeamUser(teamID, socialCode) {
         try {
-            const response = await fetch(`${BACKEND_URL}/deleteTeamUser/${teamID}/${socialCode}`, {
+            const response = await fetch(`${BACKEND_URL}/api/v1/deleteTeamUser/${teamID}/${socialCode}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -74,7 +73,7 @@
 
     async function getUserTeams() {
         try {
-            const response = await fetch(`${BACKEND_URL}/getUserTeams`, {
+            const response = await fetch(`${BACKEND_URL}/api/v1/getUserTeams`, {
                 method: 'GET',
                 credentials: 'include',
             });
