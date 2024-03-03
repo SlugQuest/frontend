@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { BACKEND_URL } from './BackendURL';
 	import { taskStore } from './taskStore';
+  import type { CreateTask, ResultEnum} from './taskStore';
 	import { fetchPoints } from './points.ts';
 
     let showModal = false;
@@ -78,12 +79,8 @@
 			task
 		});
 
-		const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
-			method: 'POST',
-			credentials: 'include',
-			body: JSON.stringify(task)
-		});
-		if (!response.ok) {
+		const response = await taskStore.addTask(task);
+		if (response === ResultEnum.BadRequest) {
 			console.error('Failed to add task', response);
 		}
 

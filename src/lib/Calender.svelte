@@ -6,6 +6,7 @@
 	import type { Task } from '$lib/taskStore';
 	import { onMount } from 'svelte';
 	import EditTaskModel from './EditTaskModel.svelte';
+	import AddTask from './AddTask.svelte';
 
 	onMount(async () => {
 		taskStore.prepareTasks();
@@ -129,7 +130,7 @@
         return;
       }
       if (task.IsRecurring) {
-        console.log('Recurring task');
+        console.log("Recurring task");
         return;
       }
 			task_models[index].open = true;
@@ -138,6 +139,9 @@
 </script>
 
 <div class="m-5 p-3 rounded-lg border-2 border-gray-200">
+	<div class="w-full flex justify-end">
+		<AddTask />
+	</div>
 	<Calendar {plugins} {options} />
 </div>
 
