@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
     import { BACKEND_URL } from './BackendURL';
+    import { onMount } from 'svelte';
+    import { teamStore } from './teamStore';
+    import AddTeamMember from './AddTeamMember.svelte';
 
     let newTeamName = '';
-
-    let teams = [
-        // { name: 'Team 1', members: ['Alice', 'Bob'] },
-        // { name: 'Team 2', members: ['Charlie', 'Dave'] },
-    ];
 
     let showTeamCreationModal = false;
     let newMemberName = '';
@@ -37,7 +35,7 @@
         } catch (error) {
             console.error('Error:', error);
         }
-        getUserTeams();
+        teamStore.prepareTeams();
         closeTeamCreationModal();
     }
 
@@ -53,7 +51,7 @@
         } catch (error) {
             console.error('Error:', error);
         }
-        getUserTeams();
+        teamStore.prepareTeams();
     }
 
     async function deleteTeamUser(teamID, socialCode) {
@@ -68,46 +66,36 @@
         } catch (error) {
             console.error('Error:', error);
         }
-        getUserTeams();
+        teamStore.prepareTeams();
     }
 
-    async function getUserTeams() {
-        try {
-            const response = await fetch(`${BACKEND_URL}/api/v1/getUserTeams`, {
-                method: 'GET',
-                credentials: 'include',
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            teams = data.teams;
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+    onMount(async () => {
+        await teamStore.prepareTeams();
+    });
     
 </script>
 
 <div>
     <h2 class="section-header text-2xl">Teams</h2>
-    {#each teams as team (team.name)}
-      <div>
-        <h3 class="team-name">
-            <span>{team.name}</span> 
-            <button class="remove-button" on:click={() => deleteTeam(team)}>x</button>
-        </h3>
-        <ul>
-          {#each team.members as member (member)}
-            <li>
-                <span class="member-name">{member}</span> 
-                <button class="remove-button" on:click={() => deleteMember(team, member)}>x</button>
-            </li>
-          {/each}
-          <li><span class="member-name"></span><button on:click={() => openAddMemberModal(team)}>+</button></li>
-        </ul>
-      </div>
-    {/each}
+    {#if Array.isArray($teamStore) && $teamStore.length > 0}
+        {#each $teamStore as team (team.Name)}
+        <div>
+            <h3 class="team-name">
+                <span>{team.Name}</span> 
+                <button class="remove-button" on:click={() => deleteTeam(team.TeamID)}>x</button>
+            </h3>
+            <ul>
+            {#each team.Members as member (member)}
+                <li>
+                    <span class="member-name">{member.Username} #{member.SoicalCode}</span> 
+                    <button class="remove-button" on:click={() => deleteTeamUser(team.TeamID, member.SoicalCode)}>x</button>
+                </li>
+            {/each}
+            <li><span class="member-name"></span><AddTeamMember tid={team.TeamID}/></li>
+            </ul>
+        </div>
+        {/each}
+    {/if}
     <button class="btn mt-2" on:click={teamCreationModal}>Create Team</button> 
 </div>
 
