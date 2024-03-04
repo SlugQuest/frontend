@@ -20,7 +20,7 @@
   </script>
   
   <button on:click={() => showModal = true}>Add Friend to Team</button>
-  
+
 {#if showModal}
   <div class="backdrop"></div>
   <div class="modal">
@@ -31,11 +31,14 @@
         <option value={friend.SocialCode}>{friend.Username}</option>
       {/each}
     </select>
-    <button on:click={addFriendToTeam}>Add to Team</button>
-    <button on:click={() => showModal = false}>Close</button>
+    <div class="button-container">
+      <button on:click={addFriendToTeam}>Add to Team</button>
+      <button on:click={() => showModal = false}>Close</button>
+    </div>
   </div>
 {/if}
-  <style>
+
+<style>
     .backdrop {
       position: fixed;
       top: 0;
@@ -52,6 +55,16 @@
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 2;
-      /* Other styles for your modal */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      border: 1px solid #fff;
+      background-color: #fff;
     }
+    .button-container {
+    margin-top: 10px;
+  }
+  .button-container button {
+    border: 1px solid #000; /* Add a black border around the buttons */
+    margin-right: 10px; /* Add a 10px space to the right of the buttons */
+    padding: 5px; /* Add a 5px padding inside the buttons */
+  }
   </style>
