@@ -136,7 +136,7 @@
 }
 
     function cronToString(cron) {
-        const [second, minute, hour, dayOfMonth, month, dayOfWeek] = cron.split(' ');
+        const [minute, hour, dayOfMonth, month, dayOfWeek] = cron.split(' ');
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         
         let result = '';
