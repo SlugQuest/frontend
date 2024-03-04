@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 	import EditTaskModel from './EditTaskModel.svelte';
 	import AddTask from './AddTask.svelte';
+	import { writable } from 'svelte/store';
 
 	onMount(async () => {
 		taskStore.prepareTasks();
@@ -32,7 +33,7 @@
 	};
 
 	function convert_task(task: Task): Event {
-    const editable = !task.IsRecurring;
+		const editable = !task.IsRecurring;
 		return {
 			start: task.StartTime,
 			end: task.EndTime,
@@ -47,23 +48,25 @@
 	}
 
 	function convert_event(event: GetEvent): Task | undefined {
-    console.log(event);
-    let index_int = parseInt(event.resourceIds[0]);
+		let index_int = parseInt(event.resourceIds[0]);
 		let prev_task = taskStore.getTask(index_int);
-    if (prev_task === undefined) {
-      console.log('Task not found');
-      return;
-    }
-    let start = new Date(event.start).toISOString();
-    start = start.replace('.000', '');
-    let end = new Date(event.end).toISOString();
-    end = end.replace('.000', '');
-    console.log(start, end);
+		if (prev_task === undefined) {
+			console.log('Task not found');
+			return;
+		}
+		let start = new Date(event.start);
+		start.setHours(start.getHours() - 8);
+		let start_str = start.toISOString();
+		start_str = start_str.replace(':00.000Z', '');
+		let end = new Date(event.end);
+		end.setHours(end.getHours() - 8);
+		let end_str = end.toISOString();
+		end_str = end_str.replace(':00.000Z', '');
 		return {
-      ...prev_task,
+			...prev_task,
 			TaskID: index_int,
-			StartTime: start,
-			EndTime: end,
+			StartTime: start_str,
+			EndTime: end_str
 		};
 	}
 
@@ -101,18 +104,37 @@
 
 	function update_callback(info: Info) {
 		let task = convert_event(info.event);
-    if (task === undefined) {
-      console.log('Task not found');
-      return;
-    }
+		if (task === undefined) {
+			console.log('Task not found');
+			return;
+		}
 		taskStore.updateTask(task);
 	}
 
-	$: task_models = tasks.map((task) => {
-		return {
-			id: task.TaskID,
-			open: false
-		};
+	let model_store = writable(
+		tasks.map((task) => {
+			return {
+				id: task.TaskID,
+				open: false
+			};
+		})
+	);
+
+	taskStore.subscribe((value) => {
+		model_store.set(
+			value.map((task) => {
+				return {
+					id: task.TaskID,
+					open: false
+				};
+			})
+		);
+	});
+
+	let tasks_model = [];
+
+	model_store.subscribe((value) => {
+		tasks_model = value;
 	});
 
 	$: events = gen_tasks(tasks);
@@ -122,29 +144,29 @@
 		view: 'timeGridWeek',
 		events,
 		eventDrop: update_callback,
+		eventResize: update_callback,
 		eventClick: (info: Info) => {
-			let index = task_models.findIndex((task_model) => task_model.id == info.event.resourceIds[0]);
-      let task = convert_event(info.event);
-      if (task === undefined) {
-        console.log('Task not found');
-        return;
-      }
-      if (task.IsRecurring) {
-        console.log("Recurring task");
-        return;
-      }
-			task_models[index].open = true;
+			let task = convert_event(info.event);
+			if (task === undefined) {
+				console.log('Task not found');
+				return;
+			}
+			model_store.update((tasks) => {
+				return tasks.map((task_model) => {
+					if (task_model.id === task.TaskID) {
+						task_model.open = true;
+					}
+					return task_model;
+				});
+			});
 		}
 	};
 </script>
 
 <div class="m-5 p-3 rounded-lg border-2 border-gray-200">
-	<div class="w-full flex justify-end">
-		<AddTask />
-	</div>
 	<Calendar {plugins} {options} />
 </div>
 
-{#each task_models as task_model}
+{#each $model_store as task_model}
 	<EditTaskModel taskID={task_model.id} bind:show={task_model.open} />
 {/each}
