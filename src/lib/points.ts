@@ -1,11 +1,17 @@
 import { BACKEND_URL } from './BackendURL';
-import { curr_health, user_points } from './store.ts';
+import { curr_health, user_points, boss_name, boss_image } from './store.ts';
 
 let currHealth: number;
 curr_health.subscribe(value => { currHealth = value });
 
 let userPoints: number;
 user_points.subscribe(value => { userPoints = value });
+
+let bossName: string;
+boss_name.subscribe(value => { bossName = value });
+
+let bossImage: string;
+boss_image.subscribe(value => { bossImage = value });
 
 export async function fetchPoints() {
     const points_response = await fetch(`${BACKEND_URL}/api/v1/userPoints`, {
@@ -14,6 +20,11 @@ export async function fetchPoints() {
     });
 
     const health_response = await fetch(`${BACKEND_URL}/api/v1/getBossHealth`, {
+        method: 'GET',
+        credentials: 'include'
+    });
+
+    const boss_response = await fetch(`${BACKEND_URL}/api/v1/getBoss/0`, {
         method: 'GET',
         credentials: 'include'
     });
@@ -36,6 +47,20 @@ export async function fetchPoints() {
         curr_health.set(health);
     } else {
         console.log("Health response FAILED");
+    }
+
+    if (boss_response.ok) {
+        console.log("Boss response is ok");
+        const boss_data = await boss_response.json();
+        let boss = boss_data.boss.Name;
+        let image = boss_data.boss.Image;
+
+        console.log("Boss: " + boss);
+        console.log("Image: " + image);
+        boss_name.set(boss);
+        boss_image.set(image);
+    } else {
+        console.log("Boss response FAILED");
     }
 
     // user_points.set(userPoints + 1);
