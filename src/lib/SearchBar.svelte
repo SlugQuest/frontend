@@ -1,5 +1,6 @@
 <script>
 	import { BACKEND_URL } from './BackendURL';
+    import { friendStore } from './friendStore';
 
 	let showModal = false;
 	let newModal = false;
@@ -78,6 +79,7 @@
 		} else {
 			console.log('Error');
 		}
+        friendStore.prepareFriends();
 	}
 </script>
 
