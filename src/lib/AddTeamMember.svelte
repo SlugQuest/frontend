@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { BACKEND_URL } from './BackendURL';
     import { friendStore } from './friendStore';
+	import { teamStore } from './teamStore';
 
     export let tid: Number;
 
@@ -16,6 +17,7 @@
             credentials: 'include',
         });
         showModal = false;
+        teamStore.prepareTeams();
     }
   </script>
   
@@ -28,7 +30,7 @@
     <select bind:value={selectedFriend}>
       <option disabled selected value> -- select a friend -- </option>
       {#each $friendStore as friend (friend.Username)}
-        <option value={friend.SocialCode}>{friend.Username}</option>
+        <option value={friend.SoicalCode}>{friend.Username}</option>
       {/each}
     </select>
     <div class="button-container">
