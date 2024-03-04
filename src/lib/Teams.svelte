@@ -78,7 +78,7 @@
 <div>
     <h2 class="section-header text-2xl">Teams</h2>
     {#if Array.isArray($teamStore) && $teamStore.length > 0}
-        {#each $teamStore as team (team.Name)}
+        {#each $teamStore as team (team.Name, team.TeamID)}
         <div>
             <h3 class="team-name">
                 <span>{team.Name}</span> 
