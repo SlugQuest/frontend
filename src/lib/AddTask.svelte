@@ -55,14 +55,14 @@
         let minute = startTime.getMinutes();
         let dayOfWeek = startTime.getDay();
         let dayOfMonth = startTime.getDate();
-        // cron expr format: "{seconds} {minutes} {hours} {day of month} {month} {day of week}"
+        // cron expr format: "{minutes} {hours} {day of month} {month} {day of week}"
         
         if (word === 'daily') {
-        cronExpression = `0 ${minute} ${hour} * * *`;
+        cronExpression = `${minute} ${hour} * * *`;
         } else if (word === 'weekly') {
-        cronExpression = `0 ${minute} ${hour} * * ${dayOfWeek}`;
+        cronExpression = `${minute} ${hour} * * ${dayOfWeek}`;
         } else if (word === 'monthly') {
-        cronExpression = `0 ${minute} ${hour} ${dayOfMonth} * *`;
+        cronExpression = `${minute} ${hour} ${dayOfMonth} * *`;
         }
     }
 

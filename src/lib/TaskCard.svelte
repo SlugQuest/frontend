@@ -136,7 +136,7 @@
 }
 
     function cronToString(cron) {
-        const [second, minute, hour, dayOfMonth, month, dayOfWeek] = cron.split(' ');
+        const [minute, hour, dayOfMonth, month, dayOfWeek] = cron.split(' ');
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         
         let result = '';
@@ -225,7 +225,7 @@
                             <label>{formatFieldName(field)}</label>
                             <input bind:value={editTask[field]} class="w-full px-2 py-1 border rounded-md mt-2" type="datetime-local" />
                             {#if taskEndTimeError}<p class="error">{taskEndTimeError}</p>{/if}
-                        {:else if field === 'IsAllDay' || field === 'IsRecurring'}
+                        {:else if field === 'IsAllDay'}
                             <label class="checkbox-label">
                                 {formatFieldName(field)}
                                 <input type="checkbox" bind:checked={editTask[field]} />
@@ -234,7 +234,7 @@
                             <label>{formatFieldName(field)}</label>
                             <input class="input-field" bind:value={editTask[field]} />
                             {#if taskNameError}<p class="error text-left">{taskNameError}</p>{/if}
-                        {:else if field === 'CronExpression'}
+                        {:else if field === 'CronExpression' || field === 'IsRecurring'}
                         <!-- Nothing here -->
                         {:else}
                             <label>{formatFieldName(field)}</label>

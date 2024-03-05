@@ -1,24 +1,10 @@
-<script script="ts">
+<script lang="ts">
     import { BACKEND_URL } from './BackendURL';
     import { onMount } from 'svelte';
     import SearchBar from './SearchBar.svelte';
 	import Teams from './Teams.svelte';
-  
-    let friends = [];
+    import { friendStore } from './friendStore';
     
-    async function getFriends() {
-        try {
-            const response = await fetch(`${BACKEND_URL}/api/v1/user/friends`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            friends = data.list;
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
     async function removeFriend(name, code) {
         if (confirm(`Are you sure you want to remove ${name} as a friend?`)) {
             try {
@@ -33,10 +19,11 @@
                 console.error('Error:', error);
             }
         }
+        friendStore.prepareFriends();
     }
-  
+    
     onMount(async () => {
-        await getFriends();
+        friendStore.prepareFriends();
     });
   
     function goBack() {
@@ -47,10 +34,6 @@
     async function logOut() {
       // Implement logout functionality
       window.location.href = `${BACKEND_URL}/logout`;
-    }
-  
-    function createTeam() {
-      // Implement team creation functionality
     }
   </script>
   
@@ -64,16 +47,17 @@
       <div>
         <h2 class="section-header text-2xl">Friends</h2>
         <ul>
-            {#each friends as friend (friend.Username, friend.SocialCode)}
-                <li>
-                    <span>{friend}</span>
-                    <button class="remove-button" on:click={() => removeFriend(friend)}>x</button>
-                </li>
-            {/each}
+            {#if Array.isArray($friendStore) && $friendStore.length > 0}
+                {#each $friendStore as friend (friend.Username, friend.SoicalCode)}
+                    <li>
+                        <span>{friend.Username} #{friend.SoicalCode}</span>
+                        <button class="remove-button" on:click={() => removeFriend(friend.Username, friend.SoicalCode)}>x</button>
+                    </li>
+                {/each}
+            {:else}
+            <p>No friends to display</p>
+            {/if}
         </ul>
-        {#if friends.length === 0}
-          <p>No friends to display</p>
-        {/if}
         <div>
             <SearchBar />
         </div>
@@ -91,12 +75,14 @@
             </tr>
           </thead>
           <tbody>
-            {#each [...friends].sort((a, b) => b.Points - a.Points) as friend (friend.Username)}
-              <tr>
-                <td>{friend.Username}</td>
-                <td>{friend.Points}</td>
-              </tr>
-            {/each}
+            {#if Array.isArray($friendStore) && $friendStore.length > 0}
+                {#each [...$friendStore].sort((a, b) => b.Points - a.Points) as friend (friend.Username)}
+                <tr>
+                    <td>{friend.Username}</td>
+                    <td>{friend.Points}</td>
+                </tr>
+                {/each}
+            {/if}
           </tbody>
         </table>
       </div>
