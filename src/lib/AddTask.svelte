@@ -91,6 +91,8 @@
 
         generateCronExpr(chronTemp);
 
+        console.log(`Cron expression: "${cronExpression}"`);
+
         const task = {
             Category: taskCategory,
             TaskName: taskName,

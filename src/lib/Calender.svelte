@@ -8,6 +8,7 @@
 	import EditTaskModel from './EditTaskModel.svelte';
 	import AddTask from './AddTask.svelte';
 	import { writable } from 'svelte/store';
+	import { BACKEND_URL } from './BackendURL';
 
 	onMount(async () => {
 		taskStore.prepareTasks();
@@ -15,9 +16,22 @@
 
 	let tasks: Task[] = [];
 
+	/*
 	taskStore.subscribe((value) => {
 		tasks = value;
 	});
+  */
+
+	async function getTasks(start: string, end: string) {
+		let url = `${BACKEND_URL}/api/v1/userTasks/${start}/${end}`;
+		let response = await fetch(url, {
+			method: 'GET',
+			credentials: 'include'
+		});
+		let data: {list: any[]} = await response.json();
+    console.log(data);
+		tasks = data.list;
+	}
 
 	type Event = {
 		start: string;
@@ -159,6 +173,9 @@
 					return task_model;
 				});
 			});
+		},
+		datesSet: (info: { startStr: string; endStr: string }) => {
+			getTasks(info.startStr + 'Z', info.endStr + 'Z');
 		}
 	};
 </script>
