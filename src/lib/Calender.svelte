@@ -6,6 +6,9 @@
 	import type { Task } from '$lib/taskStore';
 	import { onMount } from 'svelte';
 	import EditTaskModel from './EditTaskModel.svelte';
+	import AddTask from './AddTask.svelte';
+	import { writable } from 'svelte/store';
+	import { BACKEND_URL } from './BackendURL';
 
 	onMount(async () => {
 		taskStore.prepareTasks();
@@ -13,9 +16,22 @@
 
 	let tasks: Task[] = [];
 
+	/*
 	taskStore.subscribe((value) => {
 		tasks = value;
 	});
+  */
+
+	async function getTasks(start: string, end: string) {
+		let url = `${BACKEND_URL}/api/v1/userTasks/${start}/${end}`;
+		let response = await fetch(url, {
+			method: 'GET',
+			credentials: 'include'
+		});
+		let data: {list: any[]} = await response.json();
+    console.log(data);
+		tasks = data.list;
+	}
 
 	type Event = {
 		start: string;
@@ -31,26 +47,40 @@
 	};
 
 	function convert_task(task: Task): Event {
+		const editable = !task.IsRecurring;
 		return {
 			start: task.StartTime,
 			end: task.EndTime,
 			resourceId: task.TaskID,
 			display: 'default',
-			startEditable: true,
-			durationEditable: true,
-			editable: true,
+			startEditable: editable,
+			durationEditable: editable,
+			editable,
 			title: task.TaskName,
 			allDay: task.IsAllDay
 		};
 	}
 
-	function convert_event(event: GetEvent): Task {
-		let prev_task = taskStore.getTask(event.resourceIds[0]);
+	function convert_event(event: GetEvent): Task | undefined {
+		let index_int = parseInt(event.resourceIds[0]);
+		let prev_task = taskStore.getTask(index_int);
+		if (prev_task === undefined) {
+			console.log('Task not found');
+			return;
+		}
+		let start = new Date(event.start);
+		start.setHours(start.getHours() - 8);
+		let start_str = start.toISOString();
+		start_str = start_str.replace(':00.000Z', '');
+		let end = new Date(event.end);
+		end.setHours(end.getHours() - 8);
+		let end_str = end.toISOString();
+		end_str = end_str.replace(':00.000Z', '');
 		return {
-			TaskID: event.resourceIds[0],
-			StartTime: event.start,
-			EndTime: event.end,
-			...prev_task
+			...prev_task,
+			TaskID: index_int,
+			StartTime: start_str,
+			EndTime: end_str
 		};
 	}
 
@@ -63,7 +93,7 @@
 	type GetEvent = {
 		start: string;
 		end: string;
-		resourceIds: number[];
+		resourceIds: string[];
 		display: string;
 		startEditable: boolean;
 		durationEditable: boolean;
@@ -88,14 +118,37 @@
 
 	function update_callback(info: Info) {
 		let task = convert_event(info.event);
+		if (task === undefined) {
+			console.log('Task not found');
+			return;
+		}
 		taskStore.updateTask(task);
 	}
 
-	$: task_models = tasks.map((task) => {
-		return {
-			id: task.TaskID,
-			open: false
-		};
+	let model_store = writable(
+		tasks.map((task) => {
+			return {
+				id: task.TaskID,
+				open: false
+			};
+		})
+	);
+
+	taskStore.subscribe((value) => {
+		model_store.set(
+			value.map((task) => {
+				return {
+					id: task.TaskID,
+					open: false
+				};
+			})
+		);
+	});
+
+	let tasks_model = [];
+
+	model_store.subscribe((value) => {
+		tasks_model = value;
 	});
 
 	$: events = gen_tasks(tasks);
@@ -105,9 +158,24 @@
 		view: 'timeGridWeek',
 		events,
 		eventDrop: update_callback,
+		eventResize: update_callback,
 		eventClick: (info: Info) => {
-			let index = task_models.findIndex((task_model) => task_model.id == info.event.resourceIds[0]);
-			task_models[index].open = true;
+			let task = convert_event(info.event);
+			if (task === undefined) {
+				console.log('Task not found');
+				return;
+			}
+			model_store.update((tasks) => {
+				return tasks.map((task_model) => {
+					if (task_model.id === task.TaskID) {
+						task_model.open = true;
+					}
+					return task_model;
+				});
+			});
+		},
+		datesSet: (info: { startStr: string; endStr: string }) => {
+			getTasks(info.startStr + 'Z', info.endStr + 'Z');
 		}
 	};
 </script>
@@ -116,6 +184,6 @@
 	<Calendar {plugins} {options} />
 </div>
 
-{#each task_models as task_model}
+{#each $model_store as task_model}
 	<EditTaskModel taskID={task_model.id} bind:show={task_model.open} />
 {/each}
