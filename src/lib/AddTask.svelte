@@ -58,11 +58,11 @@
         // cron expr format: "{minutes} {hours} {day of month} {month} {day of week}"
         
         if (word === 'daily') {
-        cronExpression = `${minute} ${hour} * * *`;
+            cronExpression = `${minute} ${hour} * * *`;
         } else if (word === 'weekly') {
-        cronExpression = `${minute} ${hour} * * ${dayOfWeek}`;
+            cronExpression = `${minute} ${hour} * * ${dayOfWeek}`;
         } else if (word === 'monthly') {
-        cronExpression = `${minute} ${hour} ${dayOfMonth} * *`;
+            cronExpression = `${minute} ${hour} ${dayOfMonth} * *`;
         }
     }
 
