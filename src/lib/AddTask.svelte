@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { BACKEND_URL } from './BackendURL';
-	import { taskStore } from './taskStore';
-  import type { CreateTask, ResultEnum} from './taskStore';
+	import { taskStore, ResultEnum} from './taskStore';
+    import type { CreateTask } from './taskStore';
 	import { fetchPoints } from './points.ts';
 
     let showModal = false;
