@@ -1,6 +1,8 @@
 import { BACKEND_URL } from './BackendURL';
 import { curr_health, user_points, boss_name, boss_image } from './store.ts';
 
+let imagePath = '';
+
 let currHealth: number;
 curr_health.subscribe(value => { currHealth = value });
 
@@ -24,7 +26,7 @@ export async function fetchPoints() {
         credentials: 'include'
     });
 
-    const boss_response = await fetch(`${BACKEND_URL}/api/v1/getBoss/0`, {
+    const boss_response = await fetch(`${BACKEND_URL}/api/v1/getBoss/1`, {
         method: 'GET',
         credentials: 'include'
     });
