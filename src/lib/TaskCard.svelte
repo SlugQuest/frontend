@@ -89,8 +89,8 @@
 
     function formatDateTime(dateTime) {
         if (dateTime) {
-            let formattedDateTime = dateTime.substring(0, dateTime.length - 4);
-            return formattedDateTime.replace('T', ' ');
+            // let formattedDateTime = dateTime.substring(0, dateTime.length - 4);
+            return dateTime.replace('T', ' ');
         }
         return null;
     }
