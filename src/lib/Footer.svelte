@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { BACKEND_URL } from './BackendURL';
 	import { curr_health, user_points, boss_name, boss_image } from './store.ts';
-	import { fetchPoints } from './points.ts';
+	import { fetchPoints, getBossID } from './points.ts';
 	let showModal = false;
 	function viewBoss() {
 		showModal = true;
@@ -13,6 +13,7 @@
 	}
 
 	onMount(fetchPoints);
+	onMount(getBossID);
 
 	let currHealth;
 	curr_health.subscribe((value) => {
@@ -86,11 +87,7 @@
 							<h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
 								{bossName}
 							</h3>
-							<img
-								src={bossImage}
-								alt="Boss image"
-								class="mt-4"
-							/>
+							<img src={bossImage} alt="Boss image" class="mt-4" />
 						</div>
 						<button
 							type="button"

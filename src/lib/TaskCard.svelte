@@ -2,9 +2,15 @@
 	import { BACKEND_URL } from './BackendURL';
 	import { taskStore, type Task } from './taskStore';
 	import { writable } from 'svelte/store';
-	import { fetchPoints } from './points.ts';
+	import { fetchPoints, fetchBossImage } from './points.ts';
+	import { boss_ID } from './store';
 
 	export let task: Task;
+
+	let bossID: number;
+	boss_ID.subscribe((value) => {
+		bossID = value;
+	});
 
 	let showModal = false;
 
@@ -70,6 +76,18 @@
 			method: 'POST',
 			credentials: 'include'
 		});
+
+		if (response.ok) {
+			const data = await response.json();
+			console.log(data);
+			let id = data.bossId;
+			boss_ID.set(id);
+			fetchBossImage();
+			console.log('PASSING TASK AND CHECKING BOSS ID Boss ID: ' + id);
+		} else {
+			console.error('Failed to complete task', response);
+		}
+
 		taskStore.prepareTasks();
 		fetchPoints();
 	}
@@ -91,13 +109,13 @@
 			}); // capitalize the first letter
 	}
 
-    function formatDateTime(dateTime) {
-        if (dateTime) {
-            // let formattedDateTime = dateTime.substring(0, dateTime.length - 4);
-            return dateTime.replace('T', ' ');
-        }
-        return null;
-    }
+	function formatDateTime(dateTime) {
+		if (dateTime) {
+			// let formattedDateTime = dateTime.substring(0, dateTime.length - 4);
+			return dateTime.replace('T', ' ');
+		}
+		return null;
+	}
 
 	function openEditModal() {
 		editTask = { ...task };
@@ -127,17 +145,17 @@
 		closeEditModal();
 	}
 
-    function addSuffixToDay(day) {
-        if (day % 10 == 1 && day != 11) {
-            return day + "st";
-        } else if (day % 10 == 2 && day != 12) {
-            return day + "nd";
-        } else if (day % 10 == 3 && day != 13) {
-            return day + "rd";
-        } else {
-            return day + "th";
-        }
-    }
+	function addSuffixToDay(day) {
+		if (day % 10 == 1 && day != 11) {
+			return day + 'st';
+		} else if (day % 10 == 2 && day != 12) {
+			return day + 'nd';
+		} else if (day % 10 == 3 && day != 13) {
+			return day + 'rd';
+		} else {
+			return day + 'th';
+		}
+	}
 
 	function cronToString(cron) {
 		const [minute, hour, dayOfMonth, month, dayOfWeek] = cron.split(' ');
