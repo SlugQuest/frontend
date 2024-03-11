@@ -72,33 +72,37 @@
 	}
 
 	async function completeTask() {
-		const response = await fetch(`${BACKEND_URL}/api/v1/passtask/${task.TaskID}`, {
-			method: 'POST',
-			credentials: 'include'
-		});
+		if (!(task.Status === 'completed')) {
+			const response = await fetch(`${BACKEND_URL}/api/v1/passtask/${task.TaskID}`, {
+				method: 'POST',
+				credentials: 'include'
+			});
 
-		if (response.ok) {
-			const data = await response.json();
-			console.log(data);
-			let id = data.bossId;
-			boss_ID.set(id);
-			fetchBossImage();
-			console.log('PASSING TASK AND CHECKING BOSS ID Boss ID: ' + id);
-		} else {
-			console.error('Failed to complete task', response);
+			if (response.ok) {
+				const data = await response.json();
+				console.log(data);
+				let id = data.bossId;
+				boss_ID.set(id);
+				fetchBossImage();
+				console.log('PASSING TASK AND CHECKING BOSS ID Boss ID: ' + id);
+			} else {
+				console.error('Failed to complete task', response);
+			}
+
+			taskStore.prepareTasks();
+			fetchPoints();
 		}
-
-		taskStore.prepareTasks();
-		fetchPoints();
 	}
 
 	async function failTask() {
-		const response = await fetch(`${BACKEND_URL}/api/v1/failtask/${task.TaskID}`, {
-			method: 'POST',
-			credentials: 'include'
-		});
-		taskStore.prepareTasks();
-		fetchPoints();
+		if (!(task.Status === 'failed')) {
+			const response = await fetch(`${BACKEND_URL}/api/v1/failtask/${task.TaskID}`, {
+				method: 'POST',
+				credentials: 'include'
+			});
+			taskStore.prepareTasks();
+			fetchPoints();
+		}
 	}
 
 	function formatFieldName(fieldName) {
