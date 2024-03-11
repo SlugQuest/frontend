@@ -6,20 +6,23 @@
 	import { taskStore } from './taskStore';
 	import TopBar from './TopBar.svelte';
 
-  /** @type {string[]} */
-  let catagories = [];
-  taskStore.subscribe(value => 
-    catagories = Array.from(new Set(value.map(task => task.Category)))
-  );
+	/** @type {string[]} */
+	let catagories = [];
+	taskStore.subscribe(
+		(value) => (catagories = Array.from(new Set(value.map((task) => task.Category))))
+	);
+	console.log(catagories);
 </script>
 
 <main class="flex flex-col h-screen bg-white">
-	<TopBar title="SlugQuest"/>
+	<TopBar title="SlugQuest" />
 	<section class="flex flex-1 overflow-hidden">
 		<SideBar title="Categories">
-      {#each catagories as catagory}
-        <SideBarItem catagory={catagory} />
-      {/each}
+			<SideBarItem catagory="completed tasks" />
+			<SideBarItem catagory="team tasks" />			
+			{#each catagories as catagory}
+				<SideBarItem {catagory} />
+			{/each}
 		</SideBar>
 		<TaskCardView />
 	</section>

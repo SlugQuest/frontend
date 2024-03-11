@@ -26,11 +26,13 @@ export async function getBossID() {
 
     if (response.ok) {
         const data = await response.json();
-        let id = data.BossID;
+        console.log(data);
+        let id = data.BossId;
         boss_ID.set(id);
     }
 
     fetchBossImage();
+    console.log("id fetched, Boss ID: " + bossID);
 }
 
 export async function fetchBossImage() {
@@ -43,9 +45,12 @@ export async function fetchBossImage() {
         const data = await response.json();
         let name = data.boss.Name;
         let image = data.boss.Image;
+        console.log("this is it " + image);
         boss_name.set(name);
         boss_image.set(image);
     }
+    console.log("name fetched, Boss Name: " + bossName);
+    console.log("image fetched, Boss Image: " + bossImage);
 }
 
 export async function fetchPoints() {

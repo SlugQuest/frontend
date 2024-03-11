@@ -12,8 +12,15 @@
 		showModal = false;
 	}
 
-	onMount(fetchPoints);
-	onMount(getBossID);
+	function startup() {
+		console.log('startup');
+		console.log('fetching boss id');
+		getBossID();
+		console.log('fetching points');
+		fetchPoints();
+	}
+
+	onMount(startup);
 
 	let currHealth;
 	curr_health.subscribe((value) => {

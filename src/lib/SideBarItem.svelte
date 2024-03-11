@@ -4,10 +4,13 @@
 
 	function callBack() {
 		if ($categoryStore === catagory) {
+			console.log('clearing');
 			categoryStore.clearCategory();
 		} else {
+			console.log('setting');
 			categoryStore.setCategory(catagory);
 		}
+		console.log($categoryStore, catagory);
 	}
 </script>
 
