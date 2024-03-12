@@ -4,6 +4,7 @@
 	import { writable } from 'svelte/store';
 	import { fetchPoints, fetchBossImage } from './points.ts';
 	import { boss_ID } from './store';
+    import { teamStore } from './teamStore';
 
 	export let task: Task;
 
@@ -231,6 +232,10 @@
 				<p>{task.Status}</p>
 				<label>Difficulty</label>
 				<p>{task.Difficulty}</p>
+                {#if task.TeamID != -1}
+                    <label>Team</label>
+                    <p>{($teamStore.find(team => team.TeamID === task.TeamID) || {}).Name}</p>
+                {/if}
 			</div>
 			<div class="button-group">
 				<button class="delete-button" on:click={deleteTask}>Delete Task</button>

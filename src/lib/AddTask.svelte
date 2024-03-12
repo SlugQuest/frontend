@@ -120,9 +120,9 @@
 			console.error('Failed to add task', response);
 		}
 
-		console.log({
-		    task
-		});
+		// console.log({
+		//     task
+		// });
 
         clearFields();
         
