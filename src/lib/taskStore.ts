@@ -14,6 +14,7 @@ export type Task = {
   IsAllDay: boolean;
   Difficulty: string;
   CronExpression: string;
+  TeamID: number;
 };
 
 export type CreateTask = {

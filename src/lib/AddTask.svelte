@@ -3,6 +3,7 @@
 	import { taskStore, ResultEnum} from './taskStore';
     import type { CreateTask } from './taskStore';
 	import { fetchPoints } from './points.ts';
+    import { teamStore } from './teamStore';
 
     let showModal = false;
     let taskName = '';
@@ -14,6 +15,8 @@
     let taskIsAllDay = false;
     let taskDifficulty = '';
     let cronExpression = '';
+    let TeamID = -1;
+
     const setDifficulty = (difficulty) => taskDifficulty = difficulty;
 
     let taskNameError = '';
@@ -77,6 +80,7 @@
         taskDifficulty = '';
         cronExpression = '';
         chronTemp = '';
+        TeamID = -1;
     }
 
     function cancel() {
@@ -103,7 +107,8 @@
             IsRecurring: taskIsRecurring,
             IsAllDay: taskIsAllDay,
             Difficulty: taskDifficulty,
-            CronExpression: cronExpression
+            CronExpression: cronExpression,
+            TeamID: TeamID
         };
 
 		console.log({
@@ -115,9 +120,9 @@
 			console.error('Failed to add task', response);
 		}
 
-		// console.log({
-		//     task
-		// });
+		console.log({
+		    task
+		});
 
         clearFields();
         
@@ -182,7 +187,15 @@
                                     <button on:click={() => setDifficulty('hard')} class="px-4 py-2 border rounded-r-md {taskDifficulty === 'hard' ? 'bg-gray-300' : ''}">Hard</button>
                                 </div>
                                 {#if taskDifficultyError}<p class="error">{taskDifficultyError}</p>{/if}
-                            </div>                         
+                            </div>
+                            <div class="mt-2">
+                                <select bind:value={TeamID} class="w-full px-2 py-1 border rounded-md mt-2">
+                                  <option value={-1}>Individual Task</option>
+                                  {#each $teamStore as team (team.TeamID)}
+                                    <option value={team.TeamID}>{team.Name}</option>
+                                  {/each}
+                                </select>
+                            </div>                      
                         </div>
                     </div>
                 </div>

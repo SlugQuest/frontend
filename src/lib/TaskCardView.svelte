@@ -7,9 +7,11 @@
     import TaskCard from './TaskCard.svelte';
 
     import { categoryStore } from './categoryStore';
+	import { teamStore } from './teamStore';
 
     onMount(async () => {
         taskStore.prepareTasks();
+        teamStore.prepareTeams();
     });
     taskStore.subscribe(value => console.log(value));
     
