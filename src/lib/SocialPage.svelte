@@ -1,26 +1,48 @@
-<script script="ts">
+<script lang="ts">
     import { BACKEND_URL } from './BackendURL';
     import { onMount } from 'svelte';
-  
-    let friends = [];
-    
-    async function getFriends() {
+    import SearchBar from './SearchBar.svelte';
+	import Teams from './Teams.svelte';
+    import { friendStore } from './friendStore';
+
+    async function getCurrentUser() {
         try {
-            const response = await fetch(`${BACKEND_URL}/api/v1/user/friends`);
+            const response = await fetch(`${BACKEND_URL}/api/v1/user`, {
+                method: 'GET',
+                credentials: 'include',
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            friends = data.list;
+            return data;
         } catch (error) {
             console.error('Error:', error);
         }
     }
+    
+    async function removeFriend(name, code) {
+        if (confirm(`Are you sure you want to remove ${name} as a friend?`)) {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/v1/removeFriend/${code}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        friendStore.prepareFriends();
+    }
 
-    let teams = [];
-  
+    let user;
+    
     onMount(async () => {
-        await getFriends();
+        friendStore.prepareFriends();
+        user = await getCurrentUser();
     });
   
     function goBack() {
@@ -32,15 +54,16 @@
       // Implement logout functionality
       window.location.href = `${BACKEND_URL}/logout`;
     }
-  
-    function createTeam() {
-      // Implement team creation functionality
-    }
   </script>
   
-  <div class="flex justify-end">
-    <button class="btn m-2" on:click={goBack}>Go Back</button>
-    <button class="btn m-2" on:click={logOut}>Log Out</button>
+  <div class="flex justify-between">
+    <div class="m-2">
+      <p>{user?.Username}#{user?.SoicalCode}</p>
+    </div>
+    <div class="flex justify-end">
+      <button class="btn m-2" on:click={goBack}>Go Back</button>
+      <button class="btn m-2" on:click={logOut}>Log Out</button>
+    </div>
   </div>
   
   <div class="flex justify-center">
@@ -48,32 +71,23 @@
       <div>
         <h2 class="section-header text-2xl">Friends</h2>
         <ul>
-            {#each friends as friend (friend.Username)}
-              <li>{friend.Username}</li>
-            {/each}
-          </ul>
-        {#if friends.length === 0}
-          <p>No friends to display</p>
-        {/if}
+            {#if Array.isArray($friendStore) && $friendStore.length > 0}
+                {#each $friendStore as friend (friend.Username, friend.SoicalCode)}
+                    <li>
+                        <span>{friend.Username} #{friend.SoicalCode}</span>
+                        <button class="remove-button" on:click={() => removeFriend(friend.Username, friend.SoicalCode)}>x</button>
+                    </li>
+                {/each}
+            {:else}
+            <p>No friends to display</p>
+            {/if}
+        </ul>
         <div>
-            <button class="btn mt-2">Add Friend</button>
+            <SearchBar />
         </div>
       </div>
-  
-      <div>
-        <h2 class="section-header text-2xl">Teams</h2>
-        {#each teams as team (team.name)}
-          <div>
-            <h3 class="team-name">{team.name}</h3>
-            <ul>
-              {#each team.members as member (member)}
-                <li class="member-name">{member}</li>
-              {/each}
-            </ul>
-          </div>
-        {/each}
-        <button class="btn mt-2" on:click={createTeam}>Create Team</button> 
-      </div>
+
+      <Teams />
   
       <div>
         <h2 class="text-2xl">Leaderboard</h2>
@@ -85,12 +99,14 @@
             </tr>
           </thead>
           <tbody>
-            {#each [...friends].sort((a, b) => b.Points - a.Points) as friend (friend.Username)}
-              <tr>
-                <td>{friend.Username}</td>
-                <td>{friend.Points}</td>
-              </tr>
-            {/each}
+            {#if Array.isArray($friendStore) && $friendStore.length > 0}
+                {#each [...$friendStore].sort((a, b) => b.Points - a.Points) as friend (friend.Username)}
+                <tr>
+                    <td>{friend.Username}</td>
+                    <td>{friend.Points}</td>
+                </tr>
+                {/each}
+            {/if}
           </tbody>
         </table>
       </div>
@@ -137,6 +153,12 @@
     .section-header {
     font-size: 24px;
     font-weight: bolder;
+  }
+  .remove-button {
+    color: red;
+    border: none;
+    background: none;
+    cursor: pointer;
   }
 
   </style>

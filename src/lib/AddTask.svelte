@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { BACKEND_URL } from './BackendURL';
-	import { taskStore } from './taskStore';
+	import { taskStore, ResultEnum} from './taskStore';
+    import type { CreateTask } from './taskStore';
 	import { fetchPoints } from './points.ts';
+    import { teamStore } from './teamStore';
 
     let showModal = false;
     let taskName = '';
@@ -13,6 +15,8 @@
     let taskIsAllDay = false;
     let taskDifficulty = '';
     let cronExpression = '';
+    let TeamID = -1;
+
     const setDifficulty = (difficulty) => taskDifficulty = difficulty;
 
     let taskNameError = '';
@@ -54,14 +58,14 @@
         let minute = startTime.getMinutes();
         let dayOfWeek = startTime.getDay();
         let dayOfMonth = startTime.getDate();
-        // cron expr format: "{seconds} {minutes} {hours} {day of month} {month} {day of week}"
+        // cron expr format: "{minutes} {hours} {day of month} {month} {day of week}"
         
         if (word === 'daily') {
-        cronExpression = `0 ${minute} ${hour} * * *`;
+            cronExpression = `${minute} ${hour} * * *`;
         } else if (word === 'weekly') {
-        cronExpression = `0 ${minute} ${hour} * * ${dayOfWeek}`;
+            cronExpression = `${minute} ${hour} * * ${dayOfWeek}`;
         } else if (word === 'monthly') {
-        cronExpression = `0 ${minute} ${hour} ${dayOfMonth} * *`;
+            cronExpression = `${minute} ${hour} ${dayOfMonth} * *`;
         }
     }
 
@@ -76,6 +80,7 @@
         taskDifficulty = '';
         cronExpression = '';
         chronTemp = '';
+        TeamID = -1;
     }
 
     function cancel() {
@@ -90,6 +95,8 @@
 
         generateCronExpr(chronTemp);
 
+        console.log(`Cron expression: "${cronExpression}"`);
+
         const task = {
             Category: taskCategory,
             TaskName: taskName,
@@ -100,19 +107,16 @@
             IsRecurring: taskIsRecurring,
             IsAllDay: taskIsAllDay,
             Difficulty: taskDifficulty,
-            CronExpression: cronExpression
+            CronExpression: cronExpression,
+            TeamID: TeamID
         };
 
 		console.log({
 			task
 		});
 
-		const response = await fetch(`${BACKEND_URL}/api/v1/task`, {
-			method: 'POST',
-			credentials: 'include',
-			body: JSON.stringify(task)
-		});
-		if (!response.ok) {
+		const response = await taskStore.addTask(task);
+		if (response === ResultEnum.BadRequest) {
 			console.error('Failed to add task', response);
 		}
 
@@ -183,7 +187,15 @@
                                     <button on:click={() => setDifficulty('hard')} class="px-4 py-2 border rounded-r-md {taskDifficulty === 'hard' ? 'bg-gray-300' : ''}">Hard</button>
                                 </div>
                                 {#if taskDifficultyError}<p class="error">{taskDifficultyError}</p>{/if}
-                            </div>                         
+                            </div>
+                            <div class="mt-2">
+                                <select bind:value={TeamID} class="w-full px-2 py-1 border rounded-md mt-2">
+                                  <option value={-1}>Individual Task</option>
+                                  {#each $teamStore as team (team.TeamID)}
+                                    <option value={team.TeamID}>{team.Name}</option>
+                                  {/each}
+                                </select>
+                            </div>                      
                         </div>
                     </div>
                 </div>

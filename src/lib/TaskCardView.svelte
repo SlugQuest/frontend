@@ -6,10 +6,11 @@
     import { onMount } from 'svelte';
     import TaskCard from './TaskCard.svelte';
 
-    import { categoryStore, filterStore } from './categoryStore';
+	  import { teamStore } from './teamStore';
 
     onMount(async () => {
         taskStore.prepareTasks();
+        teamStore.prepareTeams();
     });
     taskStore.subscribe(value => console.log(value));
 

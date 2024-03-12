@@ -6,8 +6,6 @@
 	import { taskStore } from './taskStore';
 	import TopBar from './TopBar.svelte';
 
-	import { categoryStore, filterStore } from './categoryStore';
-
 	/**
 	 * @typedef {{label: string, callback: () => void}} CatagoryAndCallBack
 	 * @type {CatagoryAndCallBack[]} */
