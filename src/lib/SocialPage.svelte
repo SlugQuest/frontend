@@ -4,6 +4,22 @@
     import SearchBar from './SearchBar.svelte';
 	import Teams from './Teams.svelte';
     import { friendStore } from './friendStore';
+
+    async function getCurrentUser() {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/v1/user`, {
+                method: 'GET',
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
     
     async function removeFriend(name, code) {
         if (confirm(`Are you sure you want to remove ${name} as a friend?`)) {
@@ -21,9 +37,12 @@
         }
         friendStore.prepareFriends();
     }
+
+    let user;
     
     onMount(async () => {
         friendStore.prepareFriends();
+        user = await getCurrentUser();
     });
   
     function goBack() {
@@ -37,9 +56,14 @@
     }
   </script>
   
-  <div class="flex justify-end">
-    <button class="btn m-2" on:click={goBack}>Go Back</button>
-    <button class="btn m-2" on:click={logOut}>Log Out</button>
+  <div class="flex justify-between">
+    <div class="m-2">
+      <p>{user?.Username}#{user?.SoicalCode}</p>
+    </div>
+    <div class="flex justify-end">
+      <button class="btn m-2" on:click={goBack}>Go Back</button>
+      <button class="btn m-2" on:click={logOut}>Log Out</button>
+    </div>
   </div>
   
   <div class="flex justify-center">
