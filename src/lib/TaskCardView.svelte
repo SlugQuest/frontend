@@ -6,12 +6,39 @@
     import { onMount } from 'svelte';
     import TaskCard from './TaskCard.svelte';
 
-    import { categoryStore } from './categoryStore';
+    import { categoryStore, filterStore } from './categoryStore';
 
     onMount(async () => {
         taskStore.prepareTasks();
     });
     taskStore.subscribe(value => console.log(value));
+
+    for (const task of $taskStore) {
+        console.log(task);
+    }
+
+    /**
+     * @typedef {import('./taskStore').Task} Task
+     * @type {(arg0: Task) => boolean}
+     */
+    $:checkFilter = (task) => {
+        console.log($categoryStore); 
+        if ($filterStore === 'recurring') {
+           return task.IsRecurring;
+        } else if ($filterStore === 'non-recurring') {
+          return !task.IsRecurring;
+        } else if ($filterStore === 'team') {
+            return task.TeamID !== -1;
+        } else if ($filterStore === 'personal') {
+            return task.TeamID === -1;
+        } else if ($categoryStore === task.Category) {
+            return true;
+        } else if ($categoryStore === undefined) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
 </script>
 
@@ -20,9 +47,7 @@
         <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {#if Array.isArray($taskStore) && $taskStore.length > 0}
                 {#each $taskStore as task (task.TaskID)}
-                  {#if $categoryStore === task.Category}
-                    <TaskCard {task} />
-                  {:else if $categoryStore === undefined}
+                  {#if checkFilter(task)}
                     <TaskCard {task} />
                   {/if}
                 {/each}

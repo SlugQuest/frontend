@@ -1,22 +1,14 @@
 <script lang="ts">
-	export let catagory: string;
-	import { categoryStore } from './categoryStore';
+	export let label: string;
+  export let callback: () => void;
+	import { categoryStore, filterStore } from './categoryStore';
 
-	function callBack() {
-		if ($categoryStore === catagory) {
-			categoryStore.clearCategory();
-		} else {
-			categoryStore.setCategory(catagory);
-		}
-	}
 </script>
 
-<button class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100" on:click={callBack}>
-	{#if $categoryStore === catagory}
-		<span class="text-lg font-bold">#</span>
-		<span class="font-bold">{catagory}</span>
+<button class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100" on:click={callback}>
+	{#if $categoryStore === label || $filterStore === label.toLowerCase()}
+		<span class="font-bold">{label}</span>
 	{:else}
-		<span class="text-lg">#</span>
-		<span>{catagory}</span>
+		<span>{label}</span>
 	{/if}
 </button>
