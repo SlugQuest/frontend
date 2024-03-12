@@ -23,7 +23,11 @@
      */
     $:checkFilter = (task) => {
         console.log($categoryStore); 
-        if ($filterStore === 'recurring') {
+        if ($filterStore === 'complete') {
+            return task.Status === 'completed';
+        } else if (task.Status === 'completed') {
+            return false;
+        } else if ($filterStore === 'recurring') {
            return task.IsRecurring;
         } else if ($filterStore === 'non-recurring') {
           return !task.IsRecurring;

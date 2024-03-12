@@ -12,14 +12,14 @@ function createCategoryStore() {
 
 export const categoryStore = createCategoryStore();
 
-type Filter = 'recurring' | 'team' | 'non-recurring' | 'personal';
+type Filter = 'recurring' | 'team' | 'non-recurring' | 'personal' | 'complete';
 
 function createFilterStore() {
-  const { subscribe, set } = writable<'recurring' | 'team' | undefined>(undefined);
+  const { subscribe, set } = writable<Filter | undefined>(undefined);
 
   return {
     subscribe,
-    setFilter: (filter: 'recurring' | 'team') => set(filter),
+    setFilter: (filter: Filter) => set(filter),
     clearFilter: () => set(undefined),
   };
 }

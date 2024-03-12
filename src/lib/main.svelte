@@ -8,10 +8,8 @@
 
 	import { categoryStore, filterStore } from './categoryStore';
 
-	function callBack() {}
-
 	/**
-	 * @typedef {Object} CatagoryAndCallBack
+	 * @typedef {{label: string, callback: () => void}} CatagoryAndCallBack
 	 * @type {CatagoryAndCallBack[]} */
 	let catagories = [];
 	taskStore.subscribe(
@@ -87,9 +85,19 @@
           if ($filterStore === 'personal') {
             filterStore.clearFilter();
           } else {
-            console.log('personal');
             categoryStore.clearCategory();
             filterStore.setFilter('personal');
+          }
+        }}
+      />
+      <SideBarItem
+        label="Complete"
+        callback={() => {
+          if ($filterStore === 'complete') {
+            filterStore.clearFilter();
+          } else {
+            categoryStore.clearCategory();
+            filterStore.setFilter('complete');
           }
         }}
       />
