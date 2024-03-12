@@ -8,6 +8,8 @@
 
 	  import { teamStore } from './teamStore';
 
+    import { categoryStore, filterStore } from './categoryStore';
+
     onMount(async () => {
         taskStore.prepareTasks();
         teamStore.prepareTeams();

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import LogOutButton from './LogOutButton.svelte';
+	import AddTaskModel from './AddTaskModel.svelte';
 	import AddTask from './AddTask.svelte';
 
 	export let title: string;
@@ -30,6 +31,7 @@
         </button>
         {/if}
         <AddTask />
+        <AddTaskModel />
         <LogOutButton />
     </div>
 </header>
