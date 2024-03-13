@@ -15,6 +15,7 @@
 	import { taskStore } from './taskStore';
 	import type { Task } from '$lib/taskStore';
 	import { categoryStore } from './categoryStore';
+	import DeleteModel from './DeleteModel.svelte';
 
 	let task: Task | undefined = undefined;
 
@@ -64,6 +65,8 @@
 			};
 		});
 	});
+
+  let showDeleteModal = false;
 </script>
 
 {#if task !== undefined}
@@ -140,21 +143,8 @@
 				<Input id="taskCatagory" class="col-span-3" bind:value={task.Category} />
 			</div>
 			<Button on:click={updateTask}>Update</Button>
-			<AlertDialog.Root>
-				<AlertDialog.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="outline">Delete</Button>
-				</AlertDialog.Trigger>
-				<AlertDialog.Content>
-					<AlertDialog.Title>Delete Task</AlertDialog.Title>
-					<AlertDialog.Description
-						>Are you sure you want to delete this task?</AlertDialog.Description
-					>
-					<AlertDialog.Footer>
-						<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-						<AlertDialog.Action on:click={() => deleteTask()}>Delete</AlertDialog.Action>
-					</AlertDialog.Footer>
-				</AlertDialog.Content>
-			</AlertDialog.Root>
+      <Button variant="destructive" on:click={() => showDeleteModal = true}>Delete</Button>
 		</Dialog.Content>
 	</Dialog.Root>
+  <DeleteModel bind:show={showDeleteModal} task={task} />
 {/if}
