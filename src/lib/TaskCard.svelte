@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { BACKEND_URL } from './BackendURL';
 	import { taskStore, type Task } from './taskStore';
-	import { writable } from 'svelte/store';
-	import { fetchPoints, fetchBossImage } from './points.ts';
+	import { fetchPoints, fetchBossImage } from './points';
 	import { boss_ID } from './store';
 	import { teamStore } from './teamStore';
 

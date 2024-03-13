@@ -1,13 +1,9 @@
 <script lang="ts">
-	import { BACKEND_URL } from './BackendURL';
-	import { taskStore, ResultEnum} from './taskStore';
-    import type { CreateTask } from './taskStore';
-	import { fetchPoints } from './points.ts';
-    import { teamStore } from './teamStore';
+  import { taskStore, ResultEnum} from './taskStore';
+  import { teamStore } from './teamStore';
+  import type { Team } from './teamStore';
 
-  import * as Dialog from "$lib/components/ui/dialog";
   import * as Sheet from "$lib/components/ui/sheet";
-  import * as AlertDialog from "$lib/components/ui/alert-dialog";
   import * as Alert from "$lib/components/ui/alert";
   import * as Select from "$lib/components/ui/select";
   import { Input } from "$lib/components/ui/input";
@@ -16,6 +12,7 @@
   import { Separator } from "$lib/components/ui/separator";
   import { Checkbox } from "$lib/components/ui/checkbox";
   import { Textarea } from "$lib/components/ui/textarea";
+	import { derived } from 'svelte/store';
 
     let showModal = false;
     let taskName = '';
@@ -29,7 +26,13 @@
     let cronExpression = '';
     let TeamID = -1;
 
-    const setDifficulty = (difficulty) => taskDifficulty = difficulty;
+    const setDifficulty = (difficulty: {value: string} | undefined) => {
+      if (difficulty) {
+          taskDifficulty = difficulty.value;
+      } else {
+          taskDifficulty = '';
+      }
+    }
 
     let taskNameError = '';
     let taskDescriptionError = '';
@@ -39,7 +42,11 @@
     let taskDifficultyError = '';
     let taskIsRecurringError = '';
 
-    let chronTemp = '';
+    let chronTemp: string | undefined= '';
+
+    function setChronTemp(value: {value: string} | undefined) {
+        chronTemp = value?.value;
+    }
 
     $: {
         taskNameError = taskName.trim() === '' ? 'Task name is required' : '';
@@ -59,7 +66,7 @@
         }
     }
 
-    function generateCronExpr(word) {
+    function generateCronExpr(word: string | undefined) {
         let startTime = new Date(taskStartTime);
 
         let hour = startTime.getHours();
@@ -103,8 +110,6 @@
 
         generateCronExpr(chronTemp);
 
-        console.log(`Cron expression: "${cronExpression}"`);
-
         const task = {
             Category: taskCategory,
             TaskName: taskName,
@@ -119,14 +124,10 @@
             TeamID: TeamID
         };
 
-		console.log({
-			task
-		});
-
-		const response = await taskStore.addTask(task);
-		if (response === ResultEnum.BadRequest) {
-			console.error('Failed to add task', response);
-		}
+      const response = await taskStore.addTask(task);
+      if (response === ResultEnum.BadRequest) {
+        console.error('Failed to add task', response);
+      }
 
 		// console.log({
 		//     task
@@ -139,6 +140,8 @@
         taskStore.prepareTasks();
         // taskStore.addTask(task);
     }
+
+    $:teams = derived<never[], Team[]>($teamStore, x=>x);
 </script>
 
 <Button on:click={() => showModal = true}>Add Task</Button>
@@ -198,9 +201,7 @@
       <div>
         <div class="grid grid-cols-4 items-center gap-4 my-2">
           <Label for="taskRecurring" class="text-right">Frequency</Label>
-          <Select.Root id="taskRecurring" bind:value={chronTemp} onSelectedChange={(value) => {
-              chronTemp = value?.value;
-          }}>
+          <Select.Root onSelectedChange={setChronTemp}>
             <Select.Trigger class="col-span-3">
               <Select.Value placeholder="Select a recurring option" />
             </Select.Trigger>
@@ -226,9 +227,7 @@
       <div class="grid grid-cols-4 items-center gap-4 my-2">
         <Label for="taskDifficulty" class="text-right">Difficulty</Label>
         <Select.Root
-          id="taskDifficulty"
-          bind:value={taskDifficulty}
-          onSelectedChange={(value) => {setDifficulty(value?.value)}}
+          onSelectedChange={setDifficulty}
         >
           <Select.Trigger class="col-span-3">
             <Select.Value placeholder="Select a difficulty" />
@@ -254,7 +253,6 @@
           label: TeamID === -1 ? 'Personal' : $teamStore.find((team) => team.TeamID === TeamID)?.Name
         }}
         onSelectedChange={(value) => {
-          console.log(value);
           if (!value) {
             TeamID = -1;
           } else {
