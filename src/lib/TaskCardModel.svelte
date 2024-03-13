@@ -10,6 +10,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import Clock from 'svelte-radix/Clock.svelte';
+	import ListBullet from 'svelte-radix/ListBullet.svelte';
 	import Calendar from 'svelte-radix/Calendar.svelte';
 	import EditTaskModel from './EditTaskModel.svelte';
 	import { BACKEND_URL } from './BackendURL';
@@ -164,6 +165,15 @@
 				>
 			</div>
 		{/if}
+    {#if task.Category != ''}
+    <div class="grid grid-cols-4 items-center gap-4">
+      <Label class="justify-start flex">
+        <ListBullet />
+        <span class="ml-2 my-auto">Catagory:</span>
+      </Label>
+      <span class="col-span-3">{task.Category}</span>
+    </div>
+    {/if}
 		<div class="flex w-full gap-2">
 			<Button class="bg-red-500 w-full" on:click={failTask}>Fail Task</Button>
 			<Button class="bg-green-500 w-full" on:click={completeTask}>Complete Task</Button>

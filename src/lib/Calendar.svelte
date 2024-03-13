@@ -5,8 +5,6 @@
 	import { taskStore } from './taskStore';
 	import type { Task } from '$lib/taskStore';
 	import { onMount } from 'svelte';
-	import EditTaskModel from './EditTaskModel.svelte';
-	import AddTask from './AddTask.svelte';
 	import { writable } from 'svelte/store';
 	import { BACKEND_URL } from './BackendURL';
 	import TaskCardModel from './TaskCardModel.svelte';
