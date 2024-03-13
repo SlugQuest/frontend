@@ -6,6 +6,7 @@
     import { teamStore } from './teamStore';
 
   import * as Dialog from "$lib/components/ui/dialog";
+  import * as Sheet from "$lib/components/ui/sheet";
   import * as AlertDialog from "$lib/components/ui/alert-dialog";
   import * as Alert from "$lib/components/ui/alert";
   import * as Select from "$lib/components/ui/select";
@@ -48,7 +49,6 @@
         taskEndTimeError = taskEndTime.trim() === '' ? 'End time is required' : '';
         taskDifficultyError = taskDifficulty.trim() === '' ? 'Difficulty is required' : '';
         taskIsRecurringError = (taskIsRecurring && (chronTemp === '')) ? 'Specify how often task recurs' : '';
-        console.log('ChronTemp:', chronTemp);
 
         if (taskStartTime && taskEndTime) {
             const start = new Date(taskStartTime);
@@ -143,14 +143,14 @@
 
 <Button on:click={() => showModal = true}>Add Task</Button>
 
-<Dialog.Root bind:open={showModal}>
-  <Dialog.Content>
-    <Dialog.Title>Add Task</Dialog.Title>
+<Sheet.Root bind:open={showModal}>
+  <Sheet.Content>
+    <Sheet.Title>Add Task</Sheet.Title>
     <div>
       <Label for="taskName">Task Name</Label>
       <Input id="taskName" bind:value={taskName} />
       {#if taskNameError}
-        <Alert.Root variant="destructive" class="top-2 p-2">
+        <Alert.Root variant="destructive" class="my-2 p-2">
           <Alert.Description>{taskNameError}</Alert.Description>
         </Alert.Root>
       {/if}
@@ -159,46 +159,45 @@
       <Label for="taskDescription">Task Description</Label>
       <Textarea id="taskDescription" bind:value={taskDescription} />
     </div>
-    <Separator />
+    <Separator class="my-2" />
     <h3 class="text-xl font-bold">Time</h3>
-    <div class="grid grid-cols-4 items-center gap-4">
+    <div class="grid grid-cols-4 items-center gap-4 my-2">
         <Label for="taskIsAllDay" class="text-right">Is All Day</Label>
         <Checkbox id="taskIsAllDay" bind:checked={taskIsAllDay} />
     </div>
     {#if !taskIsAllDay}
       <div>
-        <div class="grid grid-cols-4 items-center gap-4 ">
+        <div class="grid grid-cols-4 items-center gap-4 my-2 ">
           <Label for="taskStartTime" class="text-right">Start Time</Label>
           <Input id="taskStartTime" type="datetime-local" class="col-span-3" bind:value={taskStartTime} />
         </div>
         {#if taskStartTimeError}
-          <Alert.Root variant="destructive" class="top-2 p-2">
+          <Alert.Root variant="destructive" class="my-2 p-2">
             <Alert.Description>{taskStartTimeError}</Alert.Description>
           </Alert.Root>
         {/if}
       </div>
       <div>
-        <div class="grid grid-cols-4 items-center gap-4 ">
+        <div class="grid grid-cols-4 items-center gap-4 my-2 ">
           <Label for="taskEndTime" class="text-right">End Time</Label>
           <Input id="taskEndTime" type="datetime-local" class="col-span-3" bind:value={taskEndTime} />
         </div>
         {#if taskEndTimeError}
-          <Alert.Root variant="destructive" class="top-2 p-2">
+          <Alert.Root variant="destructive" class="my-2 p-2">
             <Alert.Description>{taskEndTimeError}</Alert.Description>
           </Alert.Root>
         {/if}
       </div>
     {/if}
-    <Separator />
-    <h3 class="text-xl font-bold">Recurring</h3>
-    <div class="grid grid-cols-4 items-center gap-4">
-      <Label for="taskIsRecurring" class="text-right">Is Recurring</Label>
+    <Separator class="my-2" />
+    <div class="grid grid-cols-4 items-center gap-4 my-2">
+      <Label for="taskIsRecurring" class="text-right">Recurring</Label>
       <Checkbox id="taskIsRecurring" bind:checked={taskIsRecurring} />
     </div>
     {#if taskIsRecurring}
       <div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="taskRecurring" class="text-right">Recurring</Label>
+        <div class="grid grid-cols-4 items-center gap-4 my-2">
+          <Label for="taskRecurring" class="text-right">Frequency</Label>
           <Select.Root id="taskRecurring" bind:value={chronTemp} onSelectedChange={(value) => {
               chronTemp = value?.value;
           }}>
@@ -213,19 +212,18 @@
           </Select.Root>
         </div>
         {#if taskIsRecurringError}
-          <Alert.Root variant="destructive" class="top-2 p-2">
+          <Alert.Root variant="destructive" class="my-2 p-2">
             <Alert.Description>{taskIsRecurringError}</Alert.Description>
           </Alert.Root>
         {/if}
       </div>
     {/if}
-    <Separator />
-    <div class="grid grid-cols-4 items-center gap-4">
+    <div class="grid grid-cols-4 items-center gap-4 my-2">
       <Label for="taskCategory" class="text-right">Category</Label>
       <Input id="taskCategory" class="col-span-3" bind:value={taskCategory} />
     </div>
     <div>
-      <div class="grid grid-cols-4 items-center gap-4">
+      <div class="grid grid-cols-4 items-center gap-4 my-2">
         <Label for="taskDifficulty" class="text-right">Difficulty</Label>
         <Select.Root
           id="taskDifficulty"
@@ -243,12 +241,12 @@
         </Select.Root>
       </div>
       {#if taskDifficultyError}
-        <Alert.Root variant="destructive" class="top-2 p-2">
+        <Alert.Root variant="destructive" class="my-2 p-2">
           <Alert.Description>{taskDifficultyError}</Alert.Description>
         </Alert.Root>
       {/if}
     </div>
-    <div class="grid grid-cols-4 items-center gap-4">
+    <div class="grid grid-cols-4 items-center gap-4 my-2">
       <Label for="taskTeam" class="text-right">Team</Label>
       <Select.Root
         selected={{
@@ -275,10 +273,10 @@
         </Select.Content>
       </Select.Root>
     </div>
-    <Separator />
-    <div class="flex justify-end gap-4">
+    <Separator class="my-2" />
+    <div class="flex justify-end gap-4 my-2">
       <Button variant="secondary" on:click={cancel}>Cancel</Button>
       <Button on:click={addTask}>Add Task</Button>
     </div>
-  </Dialog.Content>
-</Dialog.Root>
+  </Sheet.Content>
+</Sheet.Root>
