@@ -117,15 +117,14 @@
 	function formatDateTime(dateTime) {
 		if (dateTime) {
 			// let formattedDateTime = dateTime.substring(0, dateTime.length - 4);
-			return dateTime.replace('T', ' ');
+            let formattedDateTime = dateTime;
+			return formattedDateTime.replace('T', ' ');
 		}
 		return null;
 	}
 
 	function openEditModal() {
 		editTask = { ...task };
-		editTask.StartTime = formatDateTime(editTask.StartTime);
-		editTask.EndTime = formatDateTime(editTask.EndTime);
 		console.log(editTask);
 		editModal.set(true);
 	}
