@@ -80,14 +80,9 @@
 	<ContextMenu.Content>
 		<ContextMenu.Item class="text-green-500" on:click={completeTask}>Complete</ContextMenu.Item>
 		<ContextMenu.Item class="text-red-500" on:click={failTask}>Fail</ContextMenu.Item>
-		<ContextMenu.Item
-			on:click={() => {
-				editNewModal = true;
-			}}>Edit</ContextMenu.Item
-		>
 		<ContextMenu.Item on:click={deleteTask}>Delete</ContextMenu.Item>
 	</ContextMenu.Content>
 </ContextMenu.Root>
 
-<TaskCardModel show={showNewModal} task={task} />
-<DeleteModel show={showDeleteModal} task={task} />
+<TaskCardModel bind:show={showNewModal} bind:task={task} />
+<DeleteModel bind:show={showDeleteModal} bind:task={task} />
