@@ -7,12 +7,9 @@
 	import TaskCard from './TaskCard.svelte';
 
 
-  import { filterStore, categoryStore } from './categoryStore';
+    import { filterStore, categoryStore } from './categoryStore';
 
-  import { teamStore } from './teamStore';
-
-
-	import { categoryStore, filterStore } from './categoryStore';
+    import { teamStore } from './teamStore';
 
 	onMount(async () => {
 		taskStore.prepareTasks();
