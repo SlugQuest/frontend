@@ -171,40 +171,38 @@
 			<Label for="taskIsAllDay" class="text-right">Is All Day</Label>
 			<Checkbox id="taskIsAllDay" bind:checked={taskIsAllDay} />
 		</div>
-		{#if !taskIsAllDay}
-			<div>
-				<div class="grid grid-cols-4 items-center gap-4 my-2">
-					<Label for="taskStartTime" class="text-right">Start Time</Label>
-					<Input
-						id="taskStartTime"
-						type="datetime-local"
-						class="col-span-3"
-						bind:value={taskStartTime}
-					/>
-				</div>
-				{#if taskStartTimeError}
-					<Alert.Root variant="destructive" class="my-2 p-2">
-						<Alert.Description>{taskStartTimeError}</Alert.Description>
-					</Alert.Root>
-				{/if}
-			</div>
-			<div>
-				<div class="grid grid-cols-4 items-center gap-4 my-2">
-					<Label for="taskEndTime" class="text-right">End Time</Label>
-					<Input
-						id="taskEndTime"
-						type="datetime-local"
-						class="col-span-3"
-						bind:value={taskEndTime}
-					/>
-				</div>
-				{#if taskEndTimeError}
-					<Alert.Root variant="destructive" class="my-2 p-2">
-						<Alert.Description>{taskEndTimeError}</Alert.Description>
-					</Alert.Root>
-				{/if}
-			</div>
-		{/if}
+    <div>
+      <div class="grid grid-cols-4 items-center gap-4 my-2">
+        <Label for="taskStartTime" class="text-right">Start Time</Label>
+        <Input
+          id="taskStartTime"
+          type="datetime-local"
+          class="col-span-3"
+          bind:value={taskStartTime}
+        />
+      </div>
+      {#if taskStartTimeError}
+        <Alert.Root variant="destructive" class="my-2 p-2">
+          <Alert.Description>{taskStartTimeError}</Alert.Description>
+        </Alert.Root>
+      {/if}
+    </div>
+    <div>
+      <div class="grid grid-cols-4 items-center gap-4 my-2">
+        <Label for="taskEndTime" class="text-right">End Time</Label>
+        <Input
+          id="taskEndTime"
+          type="datetime-local"
+          class="col-span-3"
+          bind:value={taskEndTime}
+        />
+      </div>
+      {#if taskEndTimeError}
+        <Alert.Root variant="destructive" class="my-2 p-2">
+          <Alert.Description>{taskEndTimeError}</Alert.Description>
+        </Alert.Root>
+      {/if}
+    </div>
 		<Separator class="my-2" />
 		<div class="grid grid-cols-4 items-center gap-4 my-2">
 			<Label for="taskIsRecurring" class="text-right">Recurring</Label>
