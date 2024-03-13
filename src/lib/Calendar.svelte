@@ -5,10 +5,9 @@
 	import { taskStore } from './taskStore';
 	import type { Task } from '$lib/taskStore';
 	import { onMount } from 'svelte';
-	import EditTaskModel from './EditTaskModel.svelte';
-	import AddTask from './AddTask.svelte';
 	import { writable } from 'svelte/store';
 	import { BACKEND_URL } from './BackendURL';
+	import TaskCardModel from './TaskCardModel.svelte';
 
 	onMount(async () => {
 		taskStore.prepareTasks();
@@ -28,8 +27,8 @@
 			method: 'GET',
 			credentials: 'include'
 		});
-		let data: {list: any[]} = await response.json();
-    console.log(data);
+		let data: { list: any[] } = await response.json();
+		console.log(data);
 		tasks = data.list;
 	}
 
@@ -128,7 +127,7 @@
 	let model_store = writable(
 		tasks.map((task) => {
 			return {
-				id: task.TaskID,
+				task,
 				open: false
 			};
 		})
@@ -138,7 +137,7 @@
 		model_store.set(
 			value.map((task) => {
 				return {
-					id: task.TaskID,
+					task,
 					open: false
 				};
 			})
@@ -167,7 +166,7 @@
 			}
 			model_store.update((tasks) => {
 				return tasks.map((task_model) => {
-					if (task_model.id === task.TaskID) {
+					if (task_model.task.TaskID === task?.TaskID) {
 						task_model.open = true;
 					}
 					return task_model;
@@ -185,5 +184,5 @@
 </div>
 
 {#each $model_store as task_model}
-	<EditTaskModel taskID={task_model.id} bind:show={task_model.open} />
+	<TaskCardModel task={task_model.task} bind:show={task_model.open} />
 {/each}
