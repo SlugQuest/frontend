@@ -28,8 +28,8 @@
 			method: 'GET',
 			credentials: 'include'
 		});
-		let data: {list: any[]} = await response.json();
-    console.log(data);
+		let data: { list: any[] } = await response.json();
+		console.log(data);
 		tasks = data.list;
 	}
 

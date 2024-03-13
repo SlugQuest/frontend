@@ -5,7 +5,7 @@
 	import TaskCardView from './TaskCardView.svelte';
 	import { taskStore } from './taskStore';
 	import TopBar from './TopBar.svelte';
-  import { categoryStore, filterStore } from './categoryStore';
+	import { categoryStore, filterStore } from './categoryStore';
 
 	/**
 	 * @typedef {{label: string, callback: () => void}} CatagoryAndCallBack
@@ -23,7 +23,7 @@
 									if ($categoryStore === task.Category) {
 										categoryStore.clearCategory();
 									} else {
-                    filterStore.clearFilter();
+										filterStore.clearFilter();
 										categoryStore.setCategory(task.Category);
 									}
 								}
@@ -45,61 +45,61 @@
 			<SideBarItem
 				label="Recurring"
 				callback={() => {
-          if ($filterStore === 'recurring') {
-            filterStore.clearFilter();
-          } else {
-            console.log('recurring');
-            filterStore.setFilter('recurring');
-            categoryStore.clearCategory();
-          }
+					if ($filterStore === 'recurring') {
+						filterStore.clearFilter();
+					} else {
+						console.log('recurring');
+						filterStore.setFilter('recurring');
+						categoryStore.clearCategory();
+					}
 				}}
 			/>
-      <SideBarItem
-        label="Non-Recurring"
-        callback={() => {
-          if ($filterStore === 'non-recurring') {
-            filterStore.clearFilter();
-          } else {
-            console.log('non-recurring');
-            filterStore.setFilter('non-recurring');
-            categoryStore.clearCategory();
-          }
-        }}
-      />
-      <SideBarItem
-        label="Team"
-        callback={() => {
-          if ($filterStore === 'team') {
-            filterStore.clearFilter();
-          } else {
-            console.log('team');
-            categoryStore.clearCategory();
-            filterStore.setFilter('team');
-          }
-        }}
-      />
-      <SideBarItem
-        label="Personal"
-        callback={() => {
-          if ($filterStore === 'personal') {
-            filterStore.clearFilter();
-          } else {
-            categoryStore.clearCategory();
-            filterStore.setFilter('personal');
-          }
-        }}
-      />
-      <SideBarItem
-        label="Complete"
-        callback={() => {
-          if ($filterStore === 'complete') {
-            filterStore.clearFilter();
-          } else {
-            categoryStore.clearCategory();
-            filterStore.setFilter('complete');
-          }
-        }}
-      />
+			<SideBarItem
+				label="Non-Recurring"
+				callback={() => {
+					if ($filterStore === 'non-recurring') {
+						filterStore.clearFilter();
+					} else {
+						console.log('non-recurring');
+						filterStore.setFilter('non-recurring');
+						categoryStore.clearCategory();
+					}
+				}}
+			/>
+			<SideBarItem
+				label="Team"
+				callback={() => {
+					if ($filterStore === 'team') {
+						filterStore.clearFilter();
+					} else {
+						console.log('team');
+						categoryStore.clearCategory();
+						filterStore.setFilter('team');
+					}
+				}}
+			/>
+			<SideBarItem
+				label="Personal"
+				callback={() => {
+					if ($filterStore === 'personal') {
+						filterStore.clearFilter();
+					} else {
+						categoryStore.clearCategory();
+						filterStore.setFilter('personal');
+					}
+				}}
+			/>
+			<SideBarItem
+				label="Complete"
+				callback={() => {
+					if ($filterStore === 'complete') {
+						filterStore.clearFilter();
+					} else {
+						categoryStore.clearCategory();
+						filterStore.setFilter('complete');
+					}
+				}}
+			/>
 		</SideBar>
 		<TaskCardView />
 	</section>

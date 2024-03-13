@@ -31,9 +31,9 @@
 
 	let showNewModal = false;
 	let editNewModal = false;
-  let showDeleteModal = false;
+	let showDeleteModal = false;
 
-  async function actuallyDeleteTask() {
+	async function actuallyDeleteTask() {
 		const response = await fetch(`${BACKEND_URL}/api/v1/task/${task.TaskID}`, {
 			method: 'DELETE',
 			credentials: 'include'
@@ -43,10 +43,10 @@
 			console.error('Failed to delete task', response);
 		}
 		taskStore.prepareTasks();
-  }
+	}
 
 	async function deleteTask() {
-    showDeleteModal = true;
+		showDeleteModal = true;
 	}
 
 	async function completeTask() {
@@ -124,23 +124,25 @@
 <ContextMenu.Root>
 	<ContextMenu.Trigger>
 		<button
-      class="w-full h-full"
+			class="w-full h-full"
 			on:click={() => {
 				showNewModal = true;
 			}}
 		>
-      <Card.Root class="w-full h-full p-5">
-        <Card.Title tag="h1" class="mb-2">{task.TaskName}</Card.Title>
-        <Card.Description>{task.Description}</Card.Description>
-      </Card.Root>
+			<Card.Root class="w-full h-full p-5">
+				<Card.Title tag="h1" class="mb-2">{task.TaskName}</Card.Title>
+				<Card.Description>{task.Description}</Card.Description>
+			</Card.Root>
 		</button>
 	</ContextMenu.Trigger>
 	<ContextMenu.Content>
-    <ContextMenu.Item class="text-green-500" on:click={completeTask}>Complete</ContextMenu.Item>
-    <ContextMenu.Item class="text-red-500" on:click={failTask}>Fail</ContextMenu.Item>
-		<ContextMenu.Item on:click={() => {
-      editNewModal = true;
-    }}>Edit</ContextMenu.Item>
+		<ContextMenu.Item class="text-green-500" on:click={completeTask}>Complete</ContextMenu.Item>
+		<ContextMenu.Item class="text-red-500" on:click={failTask}>Fail</ContextMenu.Item>
+		<ContextMenu.Item
+			on:click={() => {
+				editNewModal = true;
+			}}>Edit</ContextMenu.Item
+		>
 		<ContextMenu.Item on:click={deleteTask}>Delete</ContextMenu.Item>
 	</ContextMenu.Content>
 </ContextMenu.Root>
@@ -229,12 +231,13 @@
 <EditTaskModel bind:show={editNewModal} taskID={task.TaskID} />
 
 <AlertDialog.Root bind:open={showDeleteModal}>
-  <AlertDialog.Content>
-    <AlertDialog.Title>Delete Task</AlertDialog.Title>
-    <AlertDialog.Description>Are you sure you want to delete this task?</AlertDialog.Description>
-    <div class="flex w-full gap-2">
-      <Button variant="destructive" class="w-full" on:click={actuallyDeleteTask}>Yes</Button>
-      <Button variant="default" class="w-full" on:click={() => (showDeleteModal = false)}>No</Button>
-    </div>
-  </AlertDialog.Content>
+	<AlertDialog.Content>
+		<AlertDialog.Title>Delete Task</AlertDialog.Title>
+		<AlertDialog.Description>Are you sure you want to delete this task?</AlertDialog.Description>
+		<div class="flex w-full gap-2">
+			<Button variant="destructive" class="w-full" on:click={actuallyDeleteTask}>Yes</Button>
+			<Button variant="default" class="w-full" on:click={() => (showDeleteModal = false)}>No</Button
+			>
+		</div>
+	</AlertDialog.Content>
 </AlertDialog.Root>
