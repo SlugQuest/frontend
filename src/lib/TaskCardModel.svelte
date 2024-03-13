@@ -169,7 +169,7 @@
     <div class="grid grid-cols-4 items-center gap-4">
       <Label class="justify-start flex">
         <ListBullet />
-        <span class="ml-2 my-auto">Catagory:</span>
+        <span class="ml-2 my-auto">Category:</span>
       </Label>
       <span class="col-span-3">{task.Category}</span>
     </div>
