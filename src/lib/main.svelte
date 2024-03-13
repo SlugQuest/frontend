@@ -11,28 +11,24 @@
 	 * @typedef {{label: string, callback: () => void}} CatagoryAndCallBack
 	 * @type {CatagoryAndCallBack[]} */
 	let catagories = [];
-	taskStore.subscribe(
-		(value) =>
-			(catagories = Array.from(
-				new Set(
-					value
-						.map((task) => {
-							return {
-								label: task.Category,
-								callback: () => {
-									if ($categoryStore === task.Category) {
-										categoryStore.clearCategory();
-									} else {
-										filterStore.clearFilter();
-										categoryStore.setCategory(task.Category);
-									}
-								}
-							};
-						})
-						.filter((cat) => cat.label !== '')
-				)
-			))
-	);
+  $: taskStore.subscribe((value) => {
+    catagories = [];
+    value.forEach((task) => {
+      if (task.Category !== '' && !catagories.some((catagory) => catagory.label == task.Category)) {
+        catagories.push({
+          label: task.Category,
+          callback: () => {
+            if ($categoryStore === task.Category) {
+              categoryStore.clearCategory();
+            } else {
+              filterStore.clearFilter();
+              categoryStore.setCategory(task.Category);
+            }
+          },
+        });
+      }
+    });
+	});
 </script>
 
 <main class="flex flex-col h-screen bg-white">
