@@ -100,10 +100,10 @@
           </thead>
           <tbody>
             {#if Array.isArray($friendStore) && $friendStore.length > 0}
-                {#each [...$friendStore].sort((a, b) => b.Points - a.Points) as friend (friend.Username)}
+                {#each [...$friendStore, user].sort((a, b) => b?.Points - a?.Points) as friend (friend?.Username)}
                 <tr>
-                    <td>{friend.Username}</td>
-                    <td>{friend.Points}</td>
+                    <td>{friend?.Username}</td>
+                    <td>{friend?.Points}</td>
                 </tr>
                 {/each}
             {/if}
