@@ -1,6 +1,6 @@
 <script>
 	import { BACKEND_URL } from './BackendURL';
-    import { friendStore } from './friendStore';
+	import { friendStore } from './friendStore';
 
 	let showModal = false;
 	let newModal = false;
@@ -79,16 +79,11 @@
 		} else {
 			console.log('Error');
 		}
-        friendStore.prepareFriends();
+		friendStore.prepareFriends();
 	}
 </script>
 
-<button
-	on:click={open}
-	class="btn mt-2"
->
-	Add Friend
-</button>
+<button on:click={open} class="btn mt-2"> Add Friend </button>
 
 {#if showModal}
 	<div
@@ -177,18 +172,18 @@
 {/if}
 
 <style>
-    .btn {
-      padding: 5px 10px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 2px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
-    }
-  
-    .btn:hover {
-      background-color: #0056b3;
-    }
+	.btn {
+		padding: 5px 10px;
+		background-color: #007bff;
+		color: white;
+		border: none;
+		border-radius: 2px;
+		cursor: pointer;
+		font-size: 16px;
+		transition: background-color 0.3s ease;
+	}
+
+	.btn:hover {
+		background-color: #0056b3;
+	}
 </style>

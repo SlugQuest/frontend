@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let label: string;
-  export let callback: () => void;
+	export let callback: () => void;
 	import { categoryStore, filterStore } from './categoryStore';
 </script>
 

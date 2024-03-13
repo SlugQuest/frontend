@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { BACKEND_URL } from './BackendURL';
-    import { onMount } from 'svelte';
-    import SearchBar from './SearchBar.svelte';
+	import { BACKEND_URL } from './BackendURL';
+	import { onMount } from 'svelte';
+	import SearchBar from './SearchBar.svelte';
 	import Teams from './Teams.svelte';
     import { friendStore } from './friendStore';
 

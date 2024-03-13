@@ -1,10 +1,17 @@
 <script lang="ts">
 	import { BACKEND_URL } from './BackendURL';
 	import { taskStore, type Task } from './taskStore';
-	import { writable } from 'svelte/store';
-	import { fetchPoints, fetchBossImage } from './points.ts';
+	import { fetchPoints, fetchBossImage } from './points';
 	import { boss_ID } from './store';
-    import { teamStore } from './teamStore';
+
+	// This is a long description of the task
+	// It is a long description of the task
+	// It is a long description of the task
+
+	import * as ContextMenu from '$lib/components/ui/context-menu';
+	import * as Card from '$lib/components/ui/card';
+	import DeleteModel from './DeleteModel.svelte';
+	import TaskCardModel from './TaskCardModel.svelte';
 
 	export let task: Task;
 
@@ -13,63 +20,12 @@
 		bossID = value;
 	});
 
-	let showModal = false;
-
-	let editModal = writable(false);
-	let editTask = {
-		...task
-	};
-
-	let taskNameError = '';
-	let taskDescriptionError = '';
-	let taskCategoryError = '';
-	let taskStartTimeError = '';
-	let taskEndTimeError = '';
-	let taskDifficultyError = '';
-
-	$: {
-		if (editTask.TaskName !== undefined) {
-			taskNameError = editTask.TaskName.trim() === '' ? 'Task name is required' : '';
-		}
-		if (editTask.Description !== undefined) {
-			taskDescriptionError =
-				editTask.Description.trim() === '' ? 'Task description is required' : '';
-		}
-		if (editTask.Category !== undefined) {
-			taskCategoryError = editTask.Category.trim() === '' ? 'Task category is required' : '';
-		}
-		if (editTask.StartTime !== undefined) {
-			taskStartTimeError = editTask.StartTime.trim() === '' ? 'Start time is required' : '';
-		}
-		if (editTask.EndTime !== undefined) {
-			taskEndTimeError = editTask.EndTime.trim() === '' ? 'End time is required' : '';
-		}
-		if (editTask.Difficulty !== undefined) {
-			taskDifficultyError = editTask.Difficulty.trim() === '' ? 'Difficulty is required' : '';
-		}
-		if (editTask.StartTime && editTask.EndTime) {
-			const start = new Date(editTask.StartTime);
-			const end = new Date(editTask.EndTime);
-			if (start >= end) {
-				taskEndTimeError = 'End time must be after start time';
-			}
-		}
-	}
-
-	function toggleModal() {
-		showModal = !showModal;
-	}
+	let showNewModal = false;
+	let editNewModal = false;
+	let showDeleteModal = false;
 
 	async function deleteTask() {
-		const response = await fetch(`${BACKEND_URL}/api/v1/task/${task.TaskID}`, {
-			method: 'DELETE',
-			credentials: 'include'
-		});
-
-		if (!response.ok) {
-			console.error('Failed to delete task', response);
-		}
-		taskStore.prepareTasks();
+		showDeleteModal = true;
 	}
 
 	async function completeTask() {
@@ -105,337 +61,28 @@
 			fetchPoints();
 		}
 	}
-
-	function formatFieldName(fieldName) {
-		return fieldName
-			.replace(/([A-Z])/g, ' $1') // insert a space before all capital letters
-			.replace(/^./, function (str) {
-				return str.toUpperCase();
-			}); // capitalize the first letter
-	}
-
-	function formatDateTime(dateTime) {
-		if (dateTime) {
-			// let formattedDateTime = dateTime.substring(0, dateTime.length - 4);
-            let formattedDateTime = dateTime;
-			return formattedDateTime.replace('T', ' ');
-		}
-		return null;
-	}
-
-	function openEditModal() {
-		editTask = { ...task };
-		console.log(editTask);
-		editModal.set(true);
-	}
-
-	function closeEditModal() {
-		editModal.set(false);
-	}
-
-	async function saveTask() {
-		editTask.StartTime = editTask.StartTime + ':00Z';
-		editTask.EndTime = editTask.EndTime + ':00Z';
-		const response = await fetch(`${BACKEND_URL}/api/v1/task/${task.TaskID}`, {
-			method: 'PUT',
-			credentials: 'include',
-			body: JSON.stringify(editTask)
-		});
-
-		if (!response.ok) {
-			console.error('Failed to edit task', response);
-		}
-		taskStore.prepareTasks();
-		closeEditModal();
-	}
-
-	function addSuffixToDay(day) {
-		if (day % 10 == 1 && day != 11) {
-			return day + 'st';
-		} else if (day % 10 == 2 && day != 12) {
-			return day + 'nd';
-		} else if (day % 10 == 3 && day != 13) {
-			return day + 'rd';
-		} else {
-			return day + 'th';
-		}
-	}
-
-	function cronToString(cron) {
-		const [minute, hour, dayOfMonth, month, dayOfWeek] = cron.split(' ');
-		const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-		let result = '';
-
-		if (dayOfWeek !== '*') {
-			result = `Every ${days[dayOfWeek]} at ${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
-		} else if (dayOfMonth !== '*') {
-			result = `On the ${addSuffixToDay(dayOfMonth)} day of every month at ${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
-		} else {
-			result = `Every day at ${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
-		}
-
-		return result;
-	}
-
-	const fieldOrder = [
-		'TaskName',
-		'Description',
-		'Category',
-		'StartTime',
-		'EndTime',
-		'IsRecurring',
-		'Status',
-		'IsAllDay',
-		'Difficulty'
-	];
 </script>
 
-<button
-	class="relative rounded-lg border bg-card text-card-foreground shadow-sm"
-	data-v0-t="card"
-	on:click={toggleModal}
->
-	<div class="flex flex-col space-y-1.5 p-6">
-		<h3 class="text-2xl font-semibold whitespace-nowrap leading-none tracking-tight">
-			{task.TaskName}
-		</h3>
-		<p class="text-sm text-muted-foreground">{task.Description}</p>
-	</div>
-</button>
+<ContextMenu.Root>
+	<ContextMenu.Trigger>
+		<button
+			class="w-full h-full"
+			on:click={() => {
+				showNewModal = true;
+			}}
+		>
+			<Card.Root class="w-full h-full p-5">
+				<Card.Title tag="h1" class="mb-2">{task.TaskName}</Card.Title>
+				<Card.Description>{task.Description}</Card.Description>
+			</Card.Root>
+		</button>
+	</ContextMenu.Trigger>
+	<ContextMenu.Content>
+		<ContextMenu.Item class="text-green-500" on:click={completeTask}>Complete</ContextMenu.Item>
+		<ContextMenu.Item class="text-red-500" on:click={failTask}>Fail</ContextMenu.Item>
+		<ContextMenu.Item on:click={deleteTask}>Delete</ContextMenu.Item>
+	</ContextMenu.Content>
+</ContextMenu.Root>
 
-{#if showModal}
-	<div class="modal-background">
-		<div class="modal-content">
-			<button class="close-button" on:click={toggleModal}>X</button>
-			<div class="task-field">
-				<label>Task Name</label>
-				<p>{task.TaskName}</p>
-				<label>Description</label>
-				<p>{task.Description}</p>
-				<label>Category</label>
-				<p>{task.Category}</p>
-				<label>Start Time</label>
-				<p>{formatDateTime(task.StartTime)}</p>
-				<label>End Time</label>
-				<p>{formatDateTime(task.EndTime)}</p>
-				<label>Is All Day</label>
-				<p>{task.IsAllDay ? 'Yes' : 'No'}</p>
-				<label>Is Recurring</label>
-				<p>{task.IsRecurring ? 'Yes' : 'No'}</p>
-				{#if task.IsRecurring}
-					<label>Cron Expression</label>
-					<p>{cronToString(task.CronExpression)}</p>
-				{/if}
-				<label>Status</label>
-				<p>{task.Status}</p>
-				<label>Difficulty</label>
-				<p>{task.Difficulty}</p>
-                {#if task.TeamID != -1}
-                    <label>Team</label>
-                    <p>{($teamStore.find(team => team.TeamID === task.TeamID) || {}).Name}</p>
-                {/if}
-			</div>
-			<div class="button-group">
-				<button class="delete-button" on:click={deleteTask}>Delete Task</button>
-				<button class="fail-button" on:click={failTask}>Fail Task</button>
-				<button class="complete-button" on:click={completeTask}>Complete Task</button>
-				<button class="edit-button" on:click={openEditModal}>Edit Task</button>
-			</div>
-		</div>
-	</div>
-{/if}
-
-{#if $editModal}
-	<div class="modal-background">
-		<div class="modal-content">
-			<button class="close-button" on:click={closeEditModal}>X</button>
-			{#each fieldOrder as field}
-				{#if field !== 'Status'}
-					<div class="task-field">
-						{#if field === 'Difficulty'}
-							<label>{formatFieldName(field)}</label>
-							<div class="mt-2 flex">
-								<button
-									on:click={() => (editTask.Difficulty = 'easy')}
-									class="px-4 py-2 border rounded-l-md {editTask.Difficulty === 'easy'
-										? 'bg-gray-300'
-										: ''}">Easy</button
-								>
-								<button
-									on:click={() => (editTask.Difficulty = 'medium')}
-									class="px-4 py-2 border-t border-b {editTask.Difficulty === 'medium'
-										? 'bg-gray-300'
-										: ''}">Medium</button
-								>
-								<button
-									on:click={() => (editTask.Difficulty = 'hard')}
-									class="px-4 py-2 border rounded-r-md {editTask.Difficulty === 'hard'
-										? 'bg-gray-300'
-										: ''}">Hard</button
-								>
-							</div>
-							{#if taskDifficultyError}<p class="error">{taskDifficultyError}</p>{/if}
-						{:else if field === 'StartTime'}
-							<label>{formatFieldName(field)}</label>
-							<input
-								bind:value={editTask[field]}
-								class="w-full px-2 py-1 border rounded-md mt-2"
-								type="datetime-local"
-							/>
-						{:else if field === 'EndTime'}
-							<label>{formatFieldName(field)}</label>
-							<input
-								bind:value={editTask[field]}
-								class="w-full px-2 py-1 border rounded-md mt-2"
-								type="datetime-local"
-							/>
-							{#if taskEndTimeError}<p class="error">{taskEndTimeError}</p>{/if}
-						{:else if field === 'IsAllDay'}
-							<label class="checkbox-label">
-								{formatFieldName(field)}
-								<input type="checkbox" bind:checked={editTask[field]} />
-							</label>
-						{:else if field === 'TaskName'}
-							<label>{formatFieldName(field)}</label>
-							<input class="input-field" bind:value={editTask[field]} />
-							{#if taskNameError}<p class="error text-left">{taskNameError}</p>{/if}
-						{:else if field === 'CronExpression' || field === 'IsRecurring'}
-							<!-- Nothing here -->
-						{:else}
-							<label>{formatFieldName(field)}</label>
-							<input class="input-field" bind:value={editTask[field]} />
-						{/if}
-					</div>
-				{/if}
-			{/each}
-			<button class="save-button" on:click={saveTask}>Save Task</button>
-		</div>
-	</div>
-{/if}
-
-<style>
-	.checkbox-label {
-		display: flex;
-		align-items: center;
-	}
-
-	.checkbox-label input[type='checkbox'] {
-		margin-left: 10px;
-	}
-
-	.input-field {
-		border: 1px solid #ccc;
-		padding: 10px;
-		margin: 5px 0;
-		width: 100%;
-		box-sizing: border-box;
-	}
-	.modal-background {
-		z-index: 1000;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5);
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.modal-content {
-		background: white;
-		padding: 20px;
-		border-radius: 10px;
-		position: relative; /* Add this to position the close button relative to the modal content */
-	}
-
-	.label {
-		font-weight: bold;
-		font-size: 1.2em;
-	}
-
-	.close-button {
-		position: absolute;
-		top: 10px;
-		right: 10px;
-		background: none;
-		border: none;
-		font-size: 20px;
-		color: lightgrey;
-		cursor: pointer;
-	}
-	.delete-button {
-		background-color: red;
-		color: white;
-		border: none;
-		padding: 10px 20px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		margin: 20px 2px;
-		cursor: pointer;
-		border-radius: 5px;
-	}
-
-	.button-group {
-		display: flex;
-		justify-content: space-between;
-	}
-
-	.task-field label {
-		font-weight: bold;
-	}
-
-	.fail-button,
-	.complete-button {
-		background-color: #f44336; /* Red */
-		color: white;
-		border: none;
-		padding: 10px 20px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		margin: 20px 2px;
-		cursor: pointer;
-		border-radius: 5px;
-	}
-
-	.complete-button {
-		background-color: #4caf50; /* Green */
-	}
-
-	.edit-button {
-		background-color: lightgrey; /* Light Grey */
-		color: black;
-		border: none;
-		padding: 10px 20px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		margin: 20px 2px;
-		cursor: pointer;
-		border-radius: 5px;
-	}
-
-	.save-button {
-		background-color: #4caf50; /* Green */
-		color: white;
-		border: none;
-		padding: 10px 20px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		margin: 20px 2px;
-		cursor: pointer;
-		border-radius: 5px;
-	}
-	.error {
-		color: red;
-	}
-</style>
+<TaskCardModel bind:show={showNewModal} bind:task={task} />
+<DeleteModel bind:show={showDeleteModal} bind:task={task} />
